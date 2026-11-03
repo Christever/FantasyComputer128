@@ -1,5 +1,6 @@
 local Palette       = require("system.video.Palette")
 local Memory        = require("system.memory.Memory")
+local Font          = require("system.video.Font")
 
 ---@class Video
 ---@field memory Memory
@@ -114,6 +115,29 @@ function Video:getPoint(x, y)
     local address = y * Video.WIDTH + x
 
     return self.memory:readVRAM(address)
+end
+
+--- Affiche un caractère à l'écran
+---@param x integer position X
+---@param y integer position Y
+---@param character string caractère à afficher
+---@param colorIndex integer? couleur facultative
+function Video:drawChar(x, y, character, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    local glyph = Font.getGlyph(character)
+
+    for row = 1, Font.HEIGHT do
+        for col = 1, Font.WIDTH do
+            if glyph[row]:sub(col, col) == "1" then
+                self:setPixel(
+                    x + col - 1,
+                    y + row - 1,
+                    colorIndex
+                )
+            end
+        end
+    end
 end
 
 --- Dessine un pixel avec la couleur courante

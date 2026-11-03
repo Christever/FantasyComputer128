@@ -17,10 +17,12 @@ function VideoTest.run(video)
     video:clear(0)
 
     video:setColor(1)
-    video:drawRect(20, 20, 100, 60)
+    video:plot(50, 50)
 
-    video:setColor(2)
-    video:fillRect(150, 20, 100, 60)
+    local color = video:getPoint(50, 50)
+
+    print("Couleur du pixel :", color)
+    print("Pixel vide :", video:getPoint(60, 60))
     print("Test setPixel terminé")
 end
 
