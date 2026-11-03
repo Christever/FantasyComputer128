@@ -17,8 +17,8 @@ function VideoTest.run(video)
     video:clear(0)
 
     video:setColor(1)
-    video:drawText(20, 20, "FANTASY COMPUTER")
-    video:drawText(20, 40, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    video:drawText(20, 20, "FANTASY COMPUTER 128")
+    video:drawText(20, 40, "0123456789")
     print("Test setPixel terminé")
 end
 
