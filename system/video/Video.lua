@@ -566,7 +566,7 @@ function Video:drawSprite(sprite, x, y, flipX, flipY)
 
             local colorIndex = sprite:getPixel(sourceX, sourceY)
 
-            if colorIndex ~= -1 then
+            if colorIndex ~= sprite:getTransparentColor() then
                 self:setPixel(
                     x + sx - 1,
                     y + sy - 1,

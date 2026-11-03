@@ -14,13 +14,14 @@ function Sprite.new(width, height, colorIndex)
     assert(width > 0, "Largeur invalide")
     assert(height > 0, "Hauteur invalide")
 
-    local self = setmetatable({}, { __index = Sprite })
+    local self            = setmetatable({}, { __index = Sprite })
 
-    self.width = width
-    self.height = height
-    self.pixels = {}
+    self.width            = width
+    self.height           = height
+    self.pixels           = {}
+    self.transparentColor = -1
 
-    local color = colorIndex or -1
+    local color           = colorIndex or -1
 
     for y = 1, height do
         self.pixels[y] = {}
@@ -55,6 +56,23 @@ function Sprite:getPixel(x, y)
     end
 
     return self.pixels[y][x]
+end
+
+--- Définit la couleur transparente du sprite.
+---@param colorIndex integer Index de couleur (0-255) ou -1 pour aucune couleur transparente.
+function Sprite:setTransparentColor(colorIndex)
+    assert(
+        colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255),
+        "Couleur transparente invalide"
+    )
+
+    self.transparentColor = colorIndex
+end
+
+--- Récupère la couleur transparente du sprite.
+---@return integer Index de couleur transparente.
+function Sprite:getTransparentColor()
+    return self.transparentColor
 end
 
 return Sprite

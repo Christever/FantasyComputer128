@@ -17,16 +17,18 @@ function VideoTest.run(video)
 
     video:clear(0)
 
-    local sprite = Sprite.new(16, 16, -1)
+local sprite = Sprite.new(16, 16, 1)
 
-    -- Dessine une croix
-    for i = 1, 16 do
-        sprite:setPixel(i, i, 1)
-        sprite:setPixel(17 - i, i, 2)
+sprite:setTransparentColor(0)
+
+for y = 1, 16 do
+    for x = 1, 8 do
+        sprite:setPixel(x, y, 2)
     end
+end
 
-    -- Affiche le sprite
-    video:drawSprite(sprite, 100, 80)
+-- Affichage sans retournement
+video:drawSprite(sprite, 100, 80)
 end
 
 return VideoTest
