@@ -75,4 +75,19 @@ function Sprite:getTransparentColor()
     return self.transparentColor
 end
 
+--- Remplit entièrement le sprite avec une couleur.
+---@param colorIndex integer Index de couleur (0-255) ou -1 pour transparent.
+function Sprite:clear(colorIndex)
+    assert(
+        colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255),
+        "Couleur invalide"
+    )
+
+    for y = 1, self.height do
+        for x = 1, self.width do
+            self.pixels[y][x] = colorIndex
+        end
+    end
+end
+
 return Sprite
