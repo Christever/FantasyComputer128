@@ -140,6 +140,26 @@ function Video:drawChar(x, y, character, colorIndex)
     end
 end
 
+--- Affiche une chaîne de caractères
+---@param x integer position X
+---@param y integer position Y
+---@param text string texte à afficher
+---@param colorIndex integer? couleur facultative
+function Video:drawText(x, y, text, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    for i = 1, #text do
+        local character = text:sub(i, i)
+
+        self:drawChar(
+            x + (i - 1) * Font.CHAR_WIDTH,
+            y,
+            character,
+            colorIndex
+        )
+    end
+end
+
 --- Dessine un pixel avec la couleur courante
 ---@param x integer coordonnée X
 ---@param y integer coordonnée Y
