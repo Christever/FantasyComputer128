@@ -13,17 +13,28 @@ function VideoTest.run(video)
     Palette.setColor(2, 0, 255, 0)
     Palette.setColor(3, 0, 0, 255)
     Palette.setColor(4, 255, 255, 255)
-
     video:clear(0)
 
+    -- Polygone convexe vide
     video:setColor(1)
-    video:drawEllipse(80, 80, 50, 25)
+    video:drawPolygon({
+        { x = 40,  y = 30 },
+        { x = 120, y = 30 },
+        { x = 140, y = 80 },
+        { x = 80,  y = 110 },
+        { x = 30,  y = 80 }
+    })
 
+    -- Polygone concave plein
     video:setColor(2)
-    video:fillEllipse(220, 80, 40, 20)
-
-    video:setColor(3)
-    video:drawEllipse(160, 150, 70, 15)
+    video:fillPolygon({
+        { x = 190, y = 30 },
+        { x = 280, y = 30 },
+        { x = 250, y = 65 },
+        { x = 280, y = 110 },
+        { x = 190, y = 110 },
+        { x = 220, y = 65 }
+    })
     print("Test setPixel terminé")
 end
 

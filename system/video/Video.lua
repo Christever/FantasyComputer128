@@ -472,6 +472,82 @@ function Video:fillTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
     end
 end
 
+--- Dessine le contour d'un polygone.
+---@param points table Liste de sommets { x = number, y = number }.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function Video:drawPolygon(points, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
+
+    for i = 1, #points do
+        local current = points[i]
+        local nextPoint = points[(i % #points) + 1]
+
+        self:drawLine(
+            current.x,
+            current.y,
+            nextPoint.x,
+            nextPoint.y,
+            colorIndex
+        )
+    end
+end
+
+--- Dessine un polygone plein (convexe ou concave).
+---@param points table Liste de sommets { x = number, y = number }.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function Video:fillPolygon(points, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
+
+    local minY = points[1].y
+    local maxY = points[1].y
+
+    for i = 2, #points do
+        minY = math.min(minY, points[i].y)
+        maxY = math.max(maxY, points[i].y)
+    end
+
+    for y = minY, maxY do
+        local intersections = {}
+
+        for i = 1, #points do
+            local current = points[i]
+            local nextPoint = points[(i % #points) + 1]
+
+            local y1 = current.y
+            local y2 = nextPoint.y
+
+            -- Ignore les côtés horizontaux et évite
+            -- de compter deux fois les sommets.
+            if (y1 <= y and y < y2) or (y2 <= y and y < y1) then
+                local x = current.x
+                    + (y - y1) * (nextPoint.x - current.x) / (y2 - y1)
+
+                table.insert(intersections, x)
+            end
+        end
+
+        table.sort(intersections)
+
+        -- Remplit les zones comprises entre les intersections.
+        for i = 1, #intersections - 1, 2 do
+            self:drawLine(
+                math.ceil(intersections[i]),
+                y,
+                math.floor(intersections[i + 1]),
+                y,
+                colorIndex
+            )
+        end
+    end
+
+    -- Redessine le contour pour obtenir des bords nets.
+    self:drawPolygon(points, colorIndex)
+end
+
 --- Affiche l'image vidéo sans déformation
 function Video:draw()
     if not self.image then return end
