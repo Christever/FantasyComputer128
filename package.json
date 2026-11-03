@@ -1,0 +1,7 @@
+{
+  "name": "love2d-game-template",
+  "private": true,
+  "dependencies": {
+    "love.js": "11.4.1"
+  }
+}
