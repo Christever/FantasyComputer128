@@ -17,10 +17,7 @@ function VideoTest.run(video)
     video:clear(0)
 
     video:setColor(1)
-    video:drawChar(20, 20, "A")
-
-    video:setColor(2)
-    video:drawChar(40, 20, "B")
+    video:drawText(20, 20, "ABBA")
     print("Test setPixel terminé")
 end
 
