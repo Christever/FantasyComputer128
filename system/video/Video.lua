@@ -148,15 +148,20 @@ end
 function Video:drawText(x, y, text, colorIndex)
     colorIndex = colorIndex or self.currentColor
 
+    local startX = x
+    local cursorX = x
+    local cursorY = y
+
     for i = 1, #text do
         local character = text:sub(i, i)
 
-        self:drawChar(
-            x + (i - 1) * Font.CHAR_WIDTH,
-            y,
-            character,
-            colorIndex
-        )
+        if character == "\n" then
+            cursorX = startX
+            cursorY = cursorY + Font.CHAR_HEIGHT
+        else
+            self:drawChar(cursorX, cursorY, character, colorIndex)
+            cursorX = cursorX + Font.CHAR_WIDTH
+        end
     end
 end
 
