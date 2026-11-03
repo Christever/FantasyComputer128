@@ -119,8 +119,9 @@ end
 ---@param y1 integer coordonnée Y du premier point
 ---@param x2 integer coordonnée X du second point
 ---@param y2 integer coordonnée Y du second point
----@param colorIndex integer numéro de la couleur
+---@param colorIndex? integer numéro de la couleur
 function Video:drawLine(x1, y1, x2, y2, colorIndex)
+    colorIndex = colorIndex or self.currentColor
     local dx = math.abs(x2 - x1)
     local dy = math.abs(y2 - y1)
 
