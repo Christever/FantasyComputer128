@@ -15,11 +15,7 @@ function VideoTest.run(video)
     Palette.setColor(4, 255, 255, 255)
 
     video:clear(0)
-    video:setColor(1)
-
-    video:drawText(20, 20, "HELLO, WORLD!")
-    video:drawText(20, 40, "10 + 20 = 30")
-    video:drawText(20, 60, "PRICE: 150.50")
+    video:drawText(20, 20, "FANTASY COMPUTER 128\nHELLO WORLD!\n0123456789")
     print("Test setPixel terminé")
 end
 

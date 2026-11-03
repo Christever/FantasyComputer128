@@ -304,6 +304,100 @@ function Video:fillCircle(cx, cy, radius, colorIndex)
     end
 end
 
+---Dessine une ellipse pleine
+---@param cx integer centre X
+---@param cy integer centre Y
+---@param radiusX integer rayon X
+---@param radiusY integer rayon Y
+---@param colorIndex? integer numéro de la couleur
+function Video:drawEllipse(cx, cy, radiusX, radiusY, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    local x = 0
+    local y = radiusY
+
+    local rx2 = radiusX * radiusX
+    local ry2 = radiusY * radiusY
+
+    local dx = 0
+    local dy = 2 * rx2 * y
+
+    local p1 = ry2 - (rx2 * radiusY) + (0.25 * rx2)
+
+    while dx < dy do
+        self:setPixel(cx + x, cy + y, colorIndex)
+        self:setPixel(cx - x, cy + y, colorIndex)
+        self:setPixel(cx + x, cy - y, colorIndex)
+        self:setPixel(cx - x, cy - y, colorIndex)
+
+        if p1 < 0 then
+            x = x + 1
+            dx = dx + (2 * ry2)
+            p1 = p1 + dx + ry2
+        else
+            x = x + 1
+            y = y - 1
+
+            dx = dx + (2 * ry2)
+            dy = dy - (2 * rx2)
+
+            p1 = p1 + dx - dy + ry2
+        end
+    end
+
+    local p2 = ry2 * ((x + 0.5) * (x + 0.5))
+        + rx2 * ((y - 1) * (y - 1))
+        - rx2 * ry2
+
+    while y >= 0 do
+        self:setPixel(cx + x, cy + y, colorIndex)
+        self:setPixel(cx - x, cy + y, colorIndex)
+        self:setPixel(cx + x, cy - y, colorIndex)
+        self:setPixel(cx - x, cy - y, colorIndex)
+
+        if p2 > 0 then
+            y = y - 1
+            dy = dy - (2 * rx2)
+            p2 = p2 + rx2 - dy
+        else
+            y = y - 1
+            x = x + 1
+
+            dx = dx + (2 * ry2)
+            dy = dy - (2 * rx2)
+
+            p2 = p2 + dx - dy + rx2
+        end
+    end
+end
+
+---Dessine une ellipse vide
+---@param cx integer centre X
+---@param cy integer centre Y
+---@param radiusX integer rayon X
+---@param radiusY integer rayon Y
+---@param colorIndex? integer numéro de la couleur
+function Video:fillEllipse(cx, cy, radiusX, radiusY, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    if radiusX <= 0 or radiusY <= 0 then
+        return
+    end
+
+    for y = -radiusY, radiusY do
+        local ratio = 1 - (y * y) / (radiusY * radiusY)
+        local x = math.floor(radiusX * math.sqrt(ratio))
+
+        self:drawLine(
+            cx - x,
+            cy + y,
+            cx + x,
+            cy + y,
+            colorIndex
+        )
+    end
+end
+
 --- Affiche l'image vidéo sans déformation
 function Video:draw()
     if not self.image then return end
