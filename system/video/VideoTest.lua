@@ -15,7 +15,15 @@ function VideoTest.run(video)
     Palette.setColor(4, 255, 255, 255)
 
     video:clear(0)
-    video:drawText(20, 20, "FANTASY COMPUTER 128\nHELLO WORLD!\n0123456789")
+
+    video:setColor(1)
+    video:drawEllipse(80, 80, 50, 25)
+
+    video:setColor(2)
+    video:fillEllipse(220, 80, 40, 20)
+
+    video:setColor(3)
+    video:drawEllipse(160, 150, 70, 15)
     print("Test setPixel terminé")
 end
 

@@ -398,6 +398,80 @@ function Video:fillEllipse(cx, cy, radiusX, radiusY, colorIndex)
     end
 end
 
+--- Dessine le contour d'un triangle.
+---@param x1 number Coordonnée X du premier sommet.
+---@param y1 number Coordonnée Y du premier sommet.
+---@param x2 number Coordonnée X du deuxième sommet.
+---@param y2 number Coordonnée Y du deuxième sommet.
+---@param x3 number Coordonnée X du troisième sommet.
+---@param y3 number Coordonnée Y du troisième sommet.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function Video:drawTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    self:drawLine(x1, y1, x2, y2, colorIndex)
+    self:drawLine(x2, y2, x3, y3, colorIndex)
+    self:drawLine(x3, y3, x1, y1, colorIndex)
+end
+
+--- Dessine un triangle plein.
+---@param x1 number Coordonnée X du premier sommet.
+---@param y1 number Coordonnée Y du premier sommet.
+---@param x2 number Coordonnée X du deuxième sommet.
+---@param y2 number Coordonnée Y du deuxième sommet.
+---@param x3 number Coordonnée X du troisième sommet.
+---@param y3 number Coordonnée Y du troisième sommet.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function Video:fillTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
+    colorIndex = colorIndex or self.currentColor
+
+    local minY = math.min(y1, y2, y3)
+    local maxY = math.max(y1, y2, y3)
+
+    local function scanlineIntersection(y, xa, ya, xb, yb)
+        if ya == yb then
+            return nil
+        end
+
+        if y < math.min(ya, yb) or y > math.max(ya, yb) then
+            return nil
+        end
+
+        return xa + (y - ya) * (xb - xa) / (yb - ya)
+    end
+
+    for y = minY, maxY do
+        local intersections = {}
+
+        local x = scanlineIntersection(y, x1, y1, x2, y2)
+        if x then
+            table.insert(intersections, x)
+        end
+
+        x = scanlineIntersection(y, x2, y2, x3, y3)
+        if x then
+            table.insert(intersections, x)
+        end
+
+        x = scanlineIntersection(y, x3, y3, x1, y1)
+        if x then
+            table.insert(intersections, x)
+        end
+
+        if #intersections >= 2 then
+            table.sort(intersections)
+
+            self:drawLine(
+                math.floor(intersections[1]),
+                y,
+                math.ceil(intersections[#intersections]),
+                y,
+                colorIndex
+            )
+        end
+    end
+end
+
 --- Affiche l'image vidéo sans déformation
 function Video:draw()
     if not self.image then return end
