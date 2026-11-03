@@ -156,8 +156,9 @@ end
 ---@param y integer coordonnée Y
 ---@param width integer largeur
 ---@param height integer hauteur
----@param colorIndex integer numéro de la couleur
+---@param colorIndex? integer numéro de la couleur
 function Video:drawRect(x, y, width, height, colorIndex)
+    colorIndex = colorIndex or self.currentColor
     self:drawLine(x, y, x + width - 1, y, colorIndex)
     self:drawLine(x, y, x, y + height - 1, colorIndex)
     self:drawLine(x + width - 1, y, x + width - 1, y + height - 1, colorIndex)
@@ -169,8 +170,9 @@ end
 ---@param y integer coordonnée Y
 ---@param width integer largeur
 ---@param height integer hauteur
----@param colorIndex integer numéro de la couleur
+---@param colorIndex integer? numéro de la couleur
 function Video:fillRect(x, y, width, height, colorIndex)
+    colorIndex = colorIndex or self.currentColor
     for py = y, y + height - 1 do
         self:drawLine(x, py, x + width - 1, py, colorIndex)
     end
@@ -180,8 +182,9 @@ end
 ---@param cx integer centre X
 ---@param cy integer centre Y
 ---@param radius integer rayon
----@param colorIndex integer numéro de la couleur
+---@param colorIndex? integer numéro de la couleur
 function Video:drawCircle(cx, cy, radius, colorIndex)
+    colorIndex = colorIndex or self.currentColor
     if radius < 0 then return end
 
     local x = radius
@@ -214,8 +217,9 @@ end
 ---@param cx integer centre X
 ---@param cy integer centre Y
 ---@param radius integer rayon
----@param colorIndex integer numéro de la couleur
+---@param colorIndex? integer numéro de la couleur
 function Video:fillCircle(cx, cy, radius, colorIndex)
+    colorIndex = colorIndex or self.currentColor
     if radius < 0 then return end
 
     for y = -radius, radius do

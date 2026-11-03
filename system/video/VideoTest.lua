@@ -15,14 +15,14 @@ function VideoTest.run(video)
     Palette.setColor(4, 255, 255, 255)
 
     video:clear(0)
-    video:setColor(4)
-    video:setPixel(50,50)
+
+    video:setColor(1)
+    video:drawLine(10, 10, 100, 10)
 
     video:setColor(2)
-    video:setPixel(100,60)
+    video:drawLine(10, 20, 100, 80)
 
-    video:setPixel(200,100,3)
-
+    video:drawLine(10, 90, 100, 30, 3)
     print("Test setPixel terminé")
 end
 
