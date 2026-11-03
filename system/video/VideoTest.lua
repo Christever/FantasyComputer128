@@ -14,13 +14,19 @@ function VideoTest.run(video)
     Palette.setColor(2, 0, 255, 0)
     Palette.setColor(3, 0, 0, 255)
     Palette.setColor(4, 255, 255, 255)
-    video:clear(0)
-    local sprite = Sprite.new(16, 16, 1)
 
-    print("Sprite créé :")
-    print("Largeur :", sprite.width)
-    print("Hauteur :", sprite.height)
-    print("Premier pixel :", sprite.pixels[1][1])
+    video:clear(0)
+
+    local sprite = Sprite.new(16, 16, -1)
+
+    -- Dessine une croix
+    for i = 1, 16 do
+        sprite:setPixel(i, i, 1)
+        sprite:setPixel(17 - i, i, 2)
+    end
+
+    -- Affiche le sprite
+    video:drawSprite(sprite, 100, 80)
 end
 
 return VideoTest

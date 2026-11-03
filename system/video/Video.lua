@@ -1,6 +1,7 @@
 local Palette       = require("system.video.Palette")
 local Memory        = require("system.memory.Memory")
 local Font          = require("system.video.Font")
+local Sprite        = require("system.video.Sprite")
 
 ---@class Video
 ---@field memory Memory
@@ -546,6 +547,26 @@ function Video:fillPolygon(points, colorIndex)
 
     -- Redessine le contour pour obtenir des bords nets.
     self:drawPolygon(points, colorIndex)
+end
+
+--- Affiche un sprite à l'écran.
+---@param sprite Sprite Sprite à afficher.
+---@param x integer Position horizontale (base 1).
+---@param y integer Position verticale (base 1).
+function Video:drawSprite(sprite, x, y)
+    for sy = 1, sprite.height do
+        for sx = 1, sprite.width do
+            local colorIndex = sprite:getPixel(sx, sy)
+
+            if colorIndex ~= -1 then
+                self:setPixel(
+                    x + sx - 1,
+                    y + sy - 1,
+                    colorIndex
+                )
+            end
+        end
+    end
 end
 
 --- Affiche l'image vidéo sans déformation
