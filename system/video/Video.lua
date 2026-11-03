@@ -103,6 +103,26 @@ function Video:setPixel(x, y, colorIndex)
     self.memory:writeVRAM(address, colorIndex)
 end
 
+--- Retourne la couleur d'un pixel
+---@param x integer coordonnée X
+---@param y integer coordonnée Y
+---@return integer|nil index de couleur ou nil si hors écran
+function Video:getPoint(x, y)
+    if x < 0 or x >= Video.WIDTH then return nil end
+    if y < 0 or y >= Video.HEIGHT then return nil end
+
+    local address = y * Video.WIDTH + x
+
+    return self.memory:readVRAM(address)
+end
+
+--- Dessine un pixel avec la couleur courante
+---@param x integer coordonnée X
+---@param y integer coordonnée Y
+function Video:plot(x, y)
+    self:setPixel(x, y)
+end
+
 ---Efface l'écran avec la couleur d'index colorIndex (0 par défaut)
 ---@param colorIndex integer?   numéro de la couleur
 function Video:clear(colorIndex)

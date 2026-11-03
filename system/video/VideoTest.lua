@@ -17,12 +17,10 @@ function VideoTest.run(video)
     video:clear(0)
 
     video:setColor(1)
-    video:drawLine(10, 10, 100, 10)
+    video:drawRect(20, 20, 100, 60)
 
     video:setColor(2)
-    video:drawLine(10, 20, 100, 80)
-
-    video:drawLine(10, 90, 100, 30, 3)
+    video:fillRect(150, 20, 100, 60)
     print("Test setPixel terminé")
 end
 
