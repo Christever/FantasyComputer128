@@ -549,14 +549,22 @@ function Video:fillPolygon(points, colorIndex)
     self:drawPolygon(points, colorIndex)
 end
 
---- Affiche un sprite à l'écran.
+--- Affiche un sprite à l'écran avec possibilité de retournement.
 ---@param sprite Sprite Sprite à afficher.
 ---@param x integer Position horizontale (base 1).
 ---@param y integer Position verticale (base 1).
-function Video:drawSprite(sprite, x, y)
+---@param flipX? boolean Retournement horizontal.
+---@param flipY? boolean Retournement vertical.
+function Video:drawSprite(sprite, x, y, flipX, flipY)
+    flipX = flipX or false
+    flipY = flipY or false
+
     for sy = 1, sprite.height do
         for sx = 1, sprite.width do
-            local colorIndex = sprite:getPixel(sx, sy)
+            local sourceX = flipX and (sprite.width - sx + 1) or sx
+            local sourceY = flipY and (sprite.height - sy + 1) or sy
+
+            local colorIndex = sprite:getPixel(sourceX, sourceY)
 
             if colorIndex ~= -1 then
                 self:setPixel(
