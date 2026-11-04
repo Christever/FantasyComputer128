@@ -5,6 +5,7 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 local Memory     = require("system.memory.Memory")
 local CPU        = require("system.cpu.CPU")
 local Video      = require("system.video.Video")
+local Input      = require("system.input.Input")
 
 -- Tests
 local MemoryTest = require("system.memory.MemoryTest")
@@ -37,6 +38,9 @@ end
 
 function love.update(dt)
     video:updateScreen()
+    if Input.isKeyDown("right") then
+        print("Droite maintenue")
+    end
 end
 
 function love.draw()

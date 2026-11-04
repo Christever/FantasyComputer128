@@ -592,9 +592,6 @@ function Video:draw()
     local offsetY = (screenHeight - Video.HEIGHT * scale) / 2
 
     love.graphics.setColor(1, 1, 1, 1)
-
-    print("Fenêtre :", screenWidth, "x", screenHeight)
-    print("Image :", self.image:getWidth(), "x", self.image:getHeight())
     love.graphics.draw(
         self.image,
         offsetX,
