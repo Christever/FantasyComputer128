@@ -114,4 +114,54 @@ function Audio:mixChannels(dt)
     return math.max(-1, math.min(1, mixedSample / Audio.CHANNEL_COUNT))
 end
 
+--- Génère un bloc de données audio
+---@param sampleCount integer
+---@return love.SoundData
+function Audio:generateBuffer(sampleCount)
+    local soundData = love.sound.newSoundData(
+        sampleCount,
+        Audio.SAMPLE_RATE,
+        16,
+        2
+    )
+
+    for i = 0, sampleCount - 1 do
+        local sample = self:mixChannels(1 / Audio.SAMPLE_RATE)
+
+        soundData:setSample(i, 1, sample * self.masterVolume)
+        soundData:setSample(i, 2, sample * self.masterVolume)
+    end
+
+    return soundData
+end
+
+--- Ajoute un bloc audio à la file de lecture
+function Audio:queueBuffer()
+    if self.source:getFreeBufferCount() <= 0 then
+        return false
+    end
+
+    local soundData = self:generateBuffer(self.bufferSize)
+
+    self.source:queue(soundData)
+
+    return true
+end
+
+--- Démarre la lecture audio
+function Audio:play()
+    if not self.source:isPlaying() then
+        self.source:play()
+    end
+end
+
+--- Met à jour la file audio
+function Audio:update()
+    while self:queueBuffer() do
+        -- Remplit la file tant qu'il reste de la place
+    end
+
+    self:play()
+end
+
 return Audio
