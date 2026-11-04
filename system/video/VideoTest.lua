@@ -19,6 +19,8 @@ function VideoTest.run(video)
 
     video:clear(3)
 
+    video:drawCircle(150,150,30)
+
 -- Trace une ligne rouge tout en haut
 for x = 0, Video.WIDTH - 1 do
     video:setPixel(x, 0, 1)
