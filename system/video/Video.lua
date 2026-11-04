@@ -4,7 +4,6 @@ local Font          = require("system.video.Font")
 local Sprite        = require("system.video.Sprite")
 
 ---@class Video
----@field memory Memory
 local Video         = {}
 
 -- Résolution de l'écran
@@ -594,6 +593,8 @@ function Video:draw()
 
     love.graphics.setColor(1, 1, 1, 1)
 
+    print("Fenêtre :", screenWidth, "x", screenHeight)
+    print("Image :", self.image:getWidth(), "x", self.image:getHeight())
     love.graphics.draw(
         self.image,
         offsetX,

@@ -1,5 +1,6 @@
 local bit = require("bit")
 
+---@class CPU
 local CPU = {}
 
 local REGISTER_NAMES = {

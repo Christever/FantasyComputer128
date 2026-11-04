@@ -3,6 +3,8 @@ local Palette = require("system.video.Palette")
 local Video = require("system.video.Video")
 local Sprite = require("system.video.Sprite")
 
+
+
 local VideoTest = {}
 
 ---comment
@@ -17,6 +19,10 @@ function VideoTest.run(video)
 
     video:clear(3)
 
+-- Trace une ligne rouge tout en haut
+for x = 0, Video.WIDTH - 1 do
+    video:setPixel(x, 0, 1)
+end
     
 end
 
