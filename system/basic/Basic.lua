@@ -1,5 +1,4 @@
 ---@class Basic
----@field video Video
 local Basic = {}
 Basic.__index = Basic
 

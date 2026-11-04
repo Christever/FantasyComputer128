@@ -26,7 +26,8 @@ function Program:load(path)
     local environment = {
         cls = Graphics.cls,
         pix = Graphics.pix,
-        print = Graphics.print
+        print = Graphics.print,
+        line = Graphics.line
     }
 
     setmetatable(environment, {

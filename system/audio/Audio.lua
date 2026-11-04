@@ -1,20 +1,22 @@
 local bit = require("bit")
 
 ---@class Audio
+---@field masterVolume number
 ---@field bufferSize integer
 ---@field bufferCount integer
----@field source love.Source
 ---@field playing boolean
 ---@field paused boolean
+---@field muted boolean
+---@field source love.Source
+---@field channels table
+---@field noiseState integer
+---@field noiseFrequency number
+---@field noisePhase number
 ---@field sequence table
 ---@field sequenceIndex integer
 ---@field sequencePlaying boolean
 ---@field sequencePaused boolean
----@field sequenceTimer integer
----@field noiseState integer
----@field noiseFrequency integer
----@field noisePhase integer
----@field muted boolean
+---@field sequenceTimer number
 local Audio = {}
 
 ---@enum VolumeRange
@@ -25,6 +27,7 @@ local Volume = {
     High = 75,
     Max = 100
 }
+
 ---@enum Waveform
 local Waveform = {
     Square = "square",
@@ -33,7 +36,7 @@ local Waveform = {
     Noise = "noise"
 }
 
----@enum MusicalNote
+
 local MusicalNote = {
     DO = 261.63,
     RE = 293.66,
@@ -500,14 +503,7 @@ function Audio:setChannelWaveform(channelIndex, waveform)
     return true
 end
 
---- Définit le volume général de la console
----@param volume VolumeRange|integer Volume de 0 à 100
----@return boolean
-function Audio:setMasterVolume(volume)
-    volume = math.max(0, math.min(100, volume))
-    self.masterVolume = volume / 100
-    return true
-end
+
 
 --- Définit le volume d'un canal audio
 ---@param channelIndex 1|2|3|4 integer Numéro du canal (1 à 4)
