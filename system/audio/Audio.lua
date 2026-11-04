@@ -1,5 +1,9 @@
 ---@class Audio
+---@field bufferSize integer
+---@field bufferCount integer
+---@field source love.Source
 local Audio = {}
+
 Audio.__index = Audio
 
 Audio.CHANNEL_COUNT = 4
@@ -11,16 +15,26 @@ function Audio.new()
     local self = setmetatable({}, Audio)
 
     self.masterVolume = 1.0
+    self.bufferSize = 1024
+    self.bufferCount = 8
+
+    self.source = love.audio.newQueueableSource(
+        Audio.SAMPLE_RATE,
+        16,
+        2,
+        self.bufferCount
+    )
     self.channels = {}
 
     -- Initialisation des quatre canaux
     for i = 1, Audio.CHANNEL_COUNT do
         self.channels[i] = {
-            waveform = "square",
+            waveform  = "square",
             frequency = 440,
-            volume = 1.0,
-            enabled = true,
-            source = nil
+            volume    = 1.0,
+            enabled   = true,
+            source    = nil,
+            phase     = 0
         }
     end
 
@@ -49,6 +63,55 @@ function Audio.generateSample(waveform, phase)
     end
 
     return 0
+end
+
+--- Fait avancer la phase d'un canal audio
+---@param channel table
+---@param dt number
+function Audio.updateChannel(channel, dt)
+    if not channel.enabled then
+        return
+    end
+
+    channel.phase = channel.phase + channel.frequency * dt
+
+    -- La phase reste comprise entre 0 et 1
+    channel.phase = channel.phase % 1
+end
+
+--- Génère le prochain échantillon d'un canal
+---@param channel table
+---@param dt number
+---@return number
+function Audio.generateChannelSample(channel, dt)
+    if not channel.enabled then
+        return 0
+    end
+
+    Audio.updateChannel(channel, dt)
+
+    local sample = Audio.generateSample(
+        channel.waveform,
+        channel.phase
+    )
+
+    return sample * channel.volume
+end
+
+--- Mélange les échantillons des quatre canaux
+---@param dt number
+---@return number
+function Audio:mixChannels(dt)
+    local mixedSample = 0
+
+    for i = 1, Audio.CHANNEL_COUNT do
+        local channel = self.channels[i]
+
+        mixedSample = mixedSample
+            + Audio.generateChannelSample(channel, dt)
+    end
+
+    return math.max(-1, math.min(1, mixedSample / Audio.CHANNEL_COUNT))
 end
 
 return Audio

@@ -35,25 +35,17 @@ function love.load()
     
     video:init()
     input:init()
-
-    VideoTest.run(video)
-
-    input:setKey("LEFT", "q")
     print("Nombre de manettes :", input:getJoystickCount())
     print("Manette 1 disponible :", input:hasJoystick(1))
+
+    VideoTest.run(video)
+    AudioTest.run()
+
+    
 end
 
 function love.update(dt)
     video:updateScreen()
-
-    if input:wasKeyPressed("LEFT") then
-        print("LEFT vient d'être pressée")
-    end
-
-    if input:wasKeyReleased("LEFT") then
-        print("LEFT vient d'être relâchée")
-    end
-
     input:update()
 end
 
