@@ -6,11 +6,14 @@ local Memory     = require("system.memory.Memory")
 local CPU        = require("system.cpu.CPU")
 local Video      = require("system.video.Video")
 local Input      = require("system.input.Input")
+local Program    = require("system.Program")
+local Palette    = require("system.video.Palette")
 
 -- Tests
 local MemoryTest = require("tests.MemoryTest")
-local CPUTest    = require("system.cpu.CPUTest")
-local VideoTest  = require("system.video.VideoTest")
+local CPUTest    = require("tests.CPUTest")
+local VideoTest  = require("tests.VideoTest")
+local BasicTest  = require("tests.BasicTest")
 local AudioTest  = require("tests.AudioTest")
 
 
@@ -24,11 +27,19 @@ local video
 ---@type Input
 local input
 
+local program
+
 
 
 function love.load()
     print("Fantasy Computer 128")
     print("Initialisation de la machine...")
+
+    Palette.setColor(0, 0, 0, 0)
+    Palette.setColor(1, 255, 0, 0)
+    Palette.setColor(2, 0, 255, 0)
+    Palette.setColor(3, 0, 0, 255)
+    Palette.setColor(4, 255, 255, 255)
 
     memory = Memory.new()
     cpu    = CPU.new(memory)
@@ -39,16 +50,15 @@ function love.load()
     input:init()
     print("Nombre de manettes :", input:getJoystickCount())
     print("Manette 1 disponible :", input:hasJoystick(1))
-
-    
-    VideoTest.run(video)
-    AudioTest.run()
+    program = Program.new(video)
+    program:load("programs/main.lua")
 end
 
 function love.update(dt)
-    video:updateScreen()
     input:update()
-    AudioTest.update(dt)
+    program:update(dt)
+    video:updateScreen()
+
 end
 
 function love.draw()
