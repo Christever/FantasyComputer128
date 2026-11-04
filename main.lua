@@ -41,6 +41,8 @@ function love.load()
     VideoTest.run(video)
 
     input:setKey("LEFT", "q")
+    print("Nombre de manettes :", input:getJoystickCount())
+    print("Manette 1 disponible :", input:hasJoystick(1))
 end
 
 function love.update(dt)
