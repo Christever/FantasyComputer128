@@ -47,6 +47,7 @@ end
 function love.update(dt)
     video:updateScreen()
     input:update()
+    AudioTest.update()
 end
 
 function love.draw()

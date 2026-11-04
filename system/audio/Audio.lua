@@ -4,6 +4,16 @@
 ---@field source love.Source
 local Audio = {}
 
+---@enum VolumeRange
+local Volume = {
+    Min = 0,
+    Low = 25,
+    Medium = 50,
+    High = 75,
+    Max = 100
+}
+
+
 Audio.__index = Audio
 
 Audio.CHANNEL_COUNT = 4
@@ -162,6 +172,26 @@ function Audio:update()
     end
 
     self:play()
+end
+
+
+
+
+--- Définit le volume d'un canal audio
+---@param channelIndex 1|2|3|4 integer Numéro du canal (1 à 4)
+---@param volume VolumeRange|integer  Volume (0 à 100)
+function Audio:setChannelVolume(channelIndex, volume)
+    local channel = self.channels[channelIndex]
+
+    if not channel then
+        return false
+    end
+
+    volume = math.max(0, math.min(100, volume))
+
+    channel.volume = volume / 100
+
+    return true
 end
 
 return Audio
