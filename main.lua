@@ -11,7 +11,7 @@ local Input      = require("system.input.Input")
 local MemoryTest = require("tests.MemoryTest")
 local CPUTest    = require("system.cpu.CPUTest")
 local VideoTest  = require("system.video.VideoTest")
-local AudioTest = require("tests.AudioTest")
+local AudioTest  = require("tests.AudioTest")
 
 
 
@@ -24,6 +24,8 @@ local video
 ---@type Input
 local input
 
+
+
 function love.load()
     print("Fantasy Computer 128")
     print("Initialisation de la machine...")
@@ -32,22 +34,21 @@ function love.load()
     cpu    = CPU.new(memory)
     video  = Video.new(memory)
     input  = Input.new()
-    
+
     video:init()
     input:init()
     print("Nombre de manettes :", input:getJoystickCount())
     print("Manette 1 disponible :", input:hasJoystick(1))
 
+    
     VideoTest.run(video)
     AudioTest.run()
-
-    
 end
 
 function love.update(dt)
     video:updateScreen()
     input:update()
-    AudioTest.update()
+    AudioTest.update(dt)
 end
 
 function love.draw()
