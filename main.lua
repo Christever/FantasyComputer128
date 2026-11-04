@@ -33,7 +33,7 @@ function love.load()
     input  = Input.new()
 
     video:init()
-    input:init()
+    
 
 
     -- CPUTest.run(cpu)
