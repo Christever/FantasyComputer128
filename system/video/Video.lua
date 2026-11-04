@@ -4,6 +4,7 @@ local Font          = require("system.video.Font")
 local Sprite        = require("system.video.Sprite")
 
 ---@class Video
+---@field memory Memory
 local Video         = {}
 
 -- Résolution de l'écran

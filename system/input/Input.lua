@@ -1,11 +1,4 @@
 ---@class Input
----@field pressedKeys table<string, boolean>
----@field releasedKeys table<string, boolean>
----@field pressedJoystickButtons table<integer, table<string, boolean>>
----@field releasedJoystickButtons table<integer, table<string, boolean>>
----@field joysticks table
----@field deadZone number
----@field KEYS table<string, string>
 local Input = {}
 Input.__index = Input
 -------------------------  LOCALES -----------------

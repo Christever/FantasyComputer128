@@ -8,16 +8,17 @@ local Video      = require("system.video.Video")
 local Input      = require("system.input.Input")
 
 -- Tests
-local MemoryTest = require("system.memory.MemoryTest")
+local MemoryTest = require("tests.MemoryTest")
 local CPUTest    = require("system.cpu.CPUTest")
 local VideoTest  = require("system.video.VideoTest")
+local AudioTest = require("tests.AudioTest")
 
 
 
 
 local memory
 local cpu
----@type Video
+
 local video
 
 ---@type Input
@@ -31,13 +32,10 @@ function love.load()
     cpu    = CPU.new(memory)
     video  = Video.new(memory)
     input  = Input.new()
-
+    
     video:init()
     input:init()
 
-
-    -- CPUTest.run(cpu)
-    -- MemoryTest.run(memory, Memory)
     VideoTest.run(video)
 
     input:setKey("LEFT", "q")

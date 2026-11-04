@@ -1,4 +1,7 @@
 ---@class Sprite
+---@field pixels table
+---@field width integer
+---@field height integer
 local Sprite = {}
 
 
