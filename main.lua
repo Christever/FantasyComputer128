@@ -38,17 +38,32 @@ end
 
 function love.update(dt)
     video:updateScreen()
-    if Input.isKeyDown("right") then
+    if Input.isKeyDown("RIGHT") then
         print("Droite maintenue")
     end
+
+    if Input.wasKeyPressed("A") then
+        print("A pressée")
+    end
+
+    if Input.wasKeyReleased("A") then
+        print("A relâchée")
+    end
+
+
+    Input.update()
 end
 
 function love.draw()
     video:draw()
 end
 
-function love.keypressed(key, isrepeat)
+function love.keypressed(key)
+    Input.keypressed(key)
+end
 
+function love.keyreleased(key)
+    Input.keyreleased(key)
 end
 
 function love.mousepressed(x, y, btn)
