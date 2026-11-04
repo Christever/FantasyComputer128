@@ -20,6 +20,9 @@ local cpu
 ---@type Video
 local video
 
+---@type Input
+local input
+
 function love.load()
     print("Fantasy Computer 128")
     print("Initialisation de la machine...")
@@ -27,31 +30,31 @@ function love.load()
     memory = Memory.new()
     cpu    = CPU.new(memory)
     video  = Video.new(memory)
+    input  = Input.new()
 
     video:init()
+    input:init()
 
 
     -- CPUTest.run(cpu)
     -- MemoryTest.run(memory, Memory)
     VideoTest.run(video)
+
+    input:setKey("LEFT", "q")
 end
 
 function love.update(dt)
     video:updateScreen()
-    if Input.isKeyDown("RIGHT") then
-        print("Droite maintenue")
+
+    if input:wasKeyPressed("LEFT") then
+        print("LEFT vient d'être pressée")
     end
 
-    if Input.wasKeyPressed("A") then
-        print("A pressée")
+    if input:wasKeyReleased("LEFT") then
+        print("LEFT vient d'être relâchée")
     end
 
-    if Input.wasKeyReleased("A") then
-        print("A relâchée")
-    end
-
-
-    Input.update()
+    input:update()
 end
 
 function love.draw()
@@ -59,11 +62,11 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    Input.keypressed(key)
+
 end
 
 function love.keyreleased(key)
-    Input.keyreleased(key)
+    -- Input.keyreleased(key)
 end
 
 function love.mousepressed(x, y, btn)
