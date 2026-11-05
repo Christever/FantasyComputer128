@@ -4,6 +4,10 @@
 ---@param color? integer Index de couleur (0 à 255).
 function cls(color) end
 
+---Definit la couleur
+---@param color integer
+function color(color) end
+
 --- Dessine un pixel.
 ---@param x number Position horizontale.
 ---@param y number Position verticale.
@@ -24,3 +28,79 @@ function line(x1, y1, x2, y2, color) end
 ---@param y? number Position verticale.
 ---@param color? integer Index de couleur (0 à 255).
 function print(text, x, y, color) end
+
+--- Dessine un rectangle plein.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param width number Largeur.
+---@param height number Hauteur.
+---@param color? integer Index de couleur (0 à 255).
+function rect_fill(x, y, width, height, color) end
+
+--- Dessine un rectangle sans remplissage.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param width number Largeur.
+---@param height number Hauteur.
+---@param color? integer Index de couleur (0 à 255).
+function rect(x, y, width, height, color) end
+
+--- Dessine un cercle plein
+---@param cx integer centre X
+---@param cy integer centre Y
+---@param radius integer rayon
+---@param color? integer numéro de la couleur
+function circle(cx, cy, radius, color) end
+
+--- Dessine un cercle plein
+---@param cx integer centre X
+---@param cy integer centre Y
+---@param radius integer rayon
+---@param color? integer numéro de la couleur
+function circle_fill(cx, cy, radius, color) end
+
+--- Dessine une ellipse sans remplissage.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param width number Largeur.
+---@param height number Hauteur.
+---@param color? integer Index de couleur (0 à 255).
+function ellipse(x, y, width, height, color) end
+
+--- Dessine une ellipse pleine.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param width number Largeur.
+---@param height number Hauteur.
+---@param color? integer Index de couleur (0 à 255).
+function ellipse_fill(x, y, width, height, color) end
+
+--- Dessine le contour d'un triangle.
+---@param x1 number Coordonnée X du premier sommet.
+---@param y1 number Coordonnée Y du premier sommet.
+---@param x2 number Coordonnée X du deuxième sommet.
+---@param y2 number Coordonnée Y du deuxième sommet.
+---@param x3 number Coordonnée X du troisième sommet.
+---@param y3 number Coordonnée Y du troisième sommet.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function triangle(x1, y1, x2, y2, x3, y3, colorIndex) end
+
+--- Dessine un triangle plein
+---@param x1 number Coordonnée X du premier sommet.
+---@param y1 number Coordonnée Y du premier sommet.
+---@param x2 number Coordonnée X du deuxième sommet.
+---@param y2 number Coordonnée Y du deuxième sommet.
+---@param x3 number Coordonnée X du troisième sommet.
+---@param y3 number Coordonnée Y du troisième sommet.
+---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function triangle_fill(x1, y1, x2, y2, x3, y3, colorIndex) end
+
+--- Dessine un polygone vide (convexe ou concave).
+---@param points table Liste de sommets { x = number, y = number }.
+---@param color? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function polygone(points, color) end
+
+--- Dessine un polygone plein (convexe ou concave).
+---@param points table Liste de sommets { x = number, y = number }.
+---@param color? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
+function polygone_fill(points, color) end

@@ -4,7 +4,6 @@ local Font          = require("system.video.Font")
 local Sprite        = require("system.video.Sprite")
 
 ---@class Video
----@field memory Memory
 local Video         = {}
 
 -- Résolution de l'écran
@@ -83,6 +82,12 @@ function Video:setColor(colorIndex)
     end
 
     self.currentColor = colorIndex
+end
+
+---Retourne la couleur courante
+---@return integer
+function Video:getColor()
+    return self.currentColor
 end
 
 ---comment

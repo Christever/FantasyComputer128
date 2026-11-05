@@ -24,10 +24,22 @@ function Program:load(path)
     end
 
     local environment = {
-        cls = Graphics.cls,
-        pix = Graphics.pix,
-        print = Graphics.print,
-        line = Graphics.line
+        cls           = Graphics.cls,
+        color         = Graphics.color,
+        pixel         = Graphics.pixel,
+        print         = Graphics.print,
+        line          = Graphics.line,
+        rect_fill     = Graphics.rect_fill,
+        rect          = Graphics.rect,
+        circle        = Graphics.circle,
+        circle_fill   = Graphics.circle_fill,
+        ellipse       = Graphics.ellipse,
+        ellipse_fill  = Graphics.ellipse_fill,
+        triangle      = Graphics.triangle,
+        triangle_fill = Graphics.triangle_fill,
+        polygone      = Graphics.polygone,
+        polygone_fill = Graphics.polygone_fill
+
     }
 
     setmetatable(environment, {
@@ -45,7 +57,7 @@ function Program:load(path)
 
     self.boot = environment.BOOT
     self.fan128 = environment.FAN128
-  
+
     self.loaded = true
 
     if self.boot then

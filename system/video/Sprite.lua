@@ -1,8 +1,4 @@
 ---@class Sprite
----@field width integer
----@field height integer
----@field pixels table<integer, table<integer, integer>>
----@field transparentColor integer
 local Sprite = {}
 
 

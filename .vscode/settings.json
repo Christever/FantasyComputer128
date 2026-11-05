@@ -1,6 +1,11 @@
 {
     "Lua.diagnostics.globals": [
-        "love",
-   
+        "love"
+    ],
+    "Lua.diagnostics.disable": [
+        "duplicate-doc-field",
+        "duplicate-doc-alias",
+        "duplicate-doc-param",
+        "undefined-field"
     ]
 }

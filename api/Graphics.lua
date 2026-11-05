@@ -5,53 +5,101 @@ function Graphics.init(video)
     Graphics.video = video
 end
 
---- Efface l'écran.
----@param color? integer
 function Graphics.cls(color)
-    -- print("CLS APPELE", color)
-
     Graphics.video:clear(color or 0)
-
-    -- print("PIXEL VRAM :", Graphics.video.memory:read(0x8000))
 end
 
---- Dessine un pixel.
----@param x number
----@param y number
----@param color? integer
-function Graphics.pix(x, y, color)
-    print("PIX APPELE", x, y, color)
+function Graphics.color(color)
+    color = color or 0
+    Graphics.video:setColor(color)
+end
+
+function Graphics.pixel(x, y, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
     Graphics.video:setPixel(x, y, color)
+    -- Graphics.video:setColor(currentColor)
 end
 
---- Affiche du texte.
----@param text string
----@param x? number
----@param y? number
----@param color? integer
 function Graphics.print(text, x, y, color)
     x = x or 0
     y = y or 0
-
-    print("GRAPHICS.PRINT APPELE")
-    print("Video :", Graphics.video)
-    print("Texte :", text, "X :", x, "Y :", y)
-
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
     Graphics.video:drawText(x, y, text, color)
 end
 
---- Trace une ligne.
----@param x1 number
----@param y1 number
----@param x2 number
----@param y2 number
----@param color? integer
 function Graphics.line(x1, y1, x2, y2, color)
-    if color then
-        Graphics.video:setColor(color)
-    end
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
 
-    Graphics.video:drawLine(x1, y1, x2, y2)
+    Graphics.video:drawLine(x1, y1, x2, y2, color)
+end
+
+function Graphics.rect(x, y, width, height, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:drawRect(x, y, width, height, color)
+end
+
+function Graphics.rect_fill(x, y, width, height, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+
+    Graphics.video:fillRect(x, y, width, height)
+end
+
+
+function Graphics.circle(cx, cy, radius, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:drawCircle(cx, cy, radius, color)
+end
+
+function Graphics.circle_fill(cx, cy, radius, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:fillCircle(cx, cy, radius, color)
+end
+
+function Graphics.ellipse(x, y, width, height, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+
+    Graphics.video:drawEllipse(x, y, width, height)
+end
+
+
+function Graphics.ellipse_fill(x, y, width, height, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+
+    Graphics.video:fillEllipse(x, y, width, height)
+end
+
+
+function Graphics.triangle(x1, y1, x2, y2, x3, y3, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:drawTriangle(x1, y1, x2, y2, x3, y3, color)
+end
+
+function Graphics.triangle_fill(x1, y1, x2, y2, x3, y3, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:fillTriangle(x1, y1, x2, y2, x3, y3, color)
+end
+
+function Graphics.polygone(points, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:drawPolygon(points, color)
+end
+
+function Graphics.polygone_fill(points, color)
+    local currentColor = Graphics.video:getColor()
+    color = color or currentColor
+    Graphics.video:fillPolygon(points, color)
 end
 
 return Graphics

@@ -4,7 +4,8 @@
         "love"
     ],
     "diagnostics.disable": [
-        "duplicate-set-field"
+        "duplicate-set-field",
+        "undefined-field"
     ],
     "workspace.library": [
         "${3rd}/love2d/library",

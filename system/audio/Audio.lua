@@ -1,22 +1,6 @@
 local bit = require("bit")
 
 ---@class Audio
----@field masterVolume number
----@field bufferSize integer
----@field bufferCount integer
----@field playing boolean
----@field paused boolean
----@field muted boolean
----@field source love.Source
----@field channels table
----@field noiseState integer
----@field noiseFrequency number
----@field noisePhase number
----@field sequence table
----@field sequenceIndex integer
----@field sequencePlaying boolean
----@field sequencePaused boolean
----@field sequenceTimer number
 local Audio = {}
 
 ---@enum VolumeRange
@@ -28,6 +12,7 @@ local Volume = {
     Max = 100
 }
 
+
 ---@enum Waveform
 local Waveform = {
     Square = "square",
@@ -35,7 +20,6 @@ local Waveform = {
     Sawtooth = "sawtooth",
     Noise = "noise"
 }
-
 
 local MusicalNote = {
     DO = 261.63,
@@ -456,7 +440,7 @@ end
 ---@param note number Note issue de Audio.MusicalNote
 ---@param octave integer Octave souhaitée (1 à 7)
 ---@param duration number Durée en secondes
----@param volume VolumeRange|integer Volume de 0 à 100
+---@param volume integer Volume de 0 à 100
 ---@return boolean
 function Audio:playNote(channelIndex, note, octave, duration, volume)
     local channel = self.channels[channelIndex]
@@ -503,11 +487,9 @@ function Audio:setChannelWaveform(channelIndex, waveform)
     return true
 end
 
-
-
 --- Définit le volume d'un canal audio
 ---@param channelIndex 1|2|3|4 integer Numéro du canal (1 à 4)
----@param volume VolumeRange|integer  Volume (0 à 100)
+---@param volume integer  Volume (0 à 100)
 function Audio:setChannelVolume(channelIndex, volume)
     local channel = self.channels[channelIndex]
 
