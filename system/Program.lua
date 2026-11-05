@@ -25,6 +25,7 @@ function Program:load(path)
 
     local environment = {
         cls           = Graphics.cls,
+        palette       = Graphics.palette,
         color         = Graphics.color,
         pixel         = Graphics.pixel,
         print         = Graphics.print,

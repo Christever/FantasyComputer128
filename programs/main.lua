@@ -1,24 +1,15 @@
 function BOOT()
-    cls(4)
+    cls(0)
 end
 
 function FAN128()
     cls(0)
-        -- Polygone vide
-    polygone({
-        { x = 40, y = 40 },
-        { x = 100, y = 30 },
-        { x = 120, y = 80 },
-        { x = 70, y = 110 },
-        { x = 30, y = 80 }
-    }, 2)
 
-    -- Polygone plein
-    polygone_fill({
-        { x = 160, y = 40 },
-        { x = 220, y = 30 },
-        { x = 240, y = 80 },
-        { x = 190, y = 110 },
-        { x = 150, y = 80 }
-    }, 4)
+    for i = 0, 15 do
+        local x = 20 + (i % 8) * 36
+        local y = 40 + math.floor(i / 8) * 60
+
+        rect_fill(x, y, x + 28, y + 40, i)
+        print(tostring(i), x, y + 44, 1)
+    end
 end

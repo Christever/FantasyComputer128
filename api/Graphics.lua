@@ -1,8 +1,14 @@
 ---@class Graphics
 local Graphics = {}
 
+local Palette = require("system.video.Palette")
+
 function Graphics.init(video)
     Graphics.video = video
+end
+
+function Graphics.palette(index, r, g, b)
+    Palette.setColor(index, r, g, b)
 end
 
 function Graphics.cls(color)
@@ -46,9 +52,8 @@ function Graphics.rect_fill(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
 
-    Graphics.video:fillRect(x, y, width, height)
+    Graphics.video:fillRect(x, y, width, height, color)
 end
-
 
 function Graphics.circle(cx, cy, radius, color)
     local currentColor = Graphics.video:getColor()
@@ -69,14 +74,12 @@ function Graphics.ellipse(x, y, width, height, color)
     Graphics.video:drawEllipse(x, y, width, height)
 end
 
-
 function Graphics.ellipse_fill(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
 
     Graphics.video:fillEllipse(x, y, width, height)
 end
-
 
 function Graphics.triangle(x1, y1, x2, y2, x3, y3, color)
     local currentColor = Graphics.video:getColor()

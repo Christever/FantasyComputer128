@@ -1,5 +1,12 @@
 ---@meta
 
+--- Modifie une couleur de la palette.
+---@param index integer Index de couleur (0 à 255).
+---@param r number Rouge (0 à 255).
+---@param g number Vert (0 à 255).
+---@param b number Bleu (0 à 255).
+function palette(index, r, g, b) end
+
 --- Efface l'écran avec la couleur indiquée.
 ---@param color? integer Index de couleur (0 à 255).
 function cls(color) end
