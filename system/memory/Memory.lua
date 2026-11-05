@@ -78,7 +78,6 @@ function Memory.getPhysicalAddress(address, bank)
     return bank * Memory.BANK_SIZE + offset
 end
 
-
 function Memory.new()
     local self = setmetatable({}, { __index = Memory })
 
@@ -255,6 +254,22 @@ function Memory:reset()
     self.romBank = 0
     self.ramBank = 0
     self.vramBank = 0
+end
+
+--- Efface le contenu de la RAM et de la VRAM.
+function Memory:clear()
+    -- Effacer la RAM
+    for i = 1, #self.ram do
+        self.ram[i] = 0
+    end
+
+    -- Effacer la VRAM
+    for i = 1, #self.vram do
+        self.vram[i] = 0
+    end
+
+    -- Réinitialiser les banques
+    self:reset()
 end
 
 return Memory

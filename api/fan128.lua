@@ -111,3 +111,14 @@ function polygone(points, color) end
 ---@param points table Liste de sommets { x = number, y = number }.
 ---@param color? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
 function polygone_fill(points, color) end
+
+----------------------  MEMOIRE  ------------------------------
+--- Lit un octet à une adresse mémoire.
+---@param address integer Adresse CPU (0 à 65535)
+---@return integer
+function peek(address) end
+
+--- Écrit un octet à une adresse mémoire.
+---@param address integer Adresse CPU (0 à 65535)
+---@param value integer Valeur (0 à 255)
+function poke(address, value) end

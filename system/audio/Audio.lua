@@ -560,4 +560,35 @@ function Audio:pause()
     self.source:pause()
 end
 
+--- Réinitialise le système audio.
+function Audio:reset()
+    -- Arrêter la lecture
+    self:stop()
+
+    -- Réinitialiser les canaux
+    for i = 1, Audio.CHANNEL_COUNT do
+        local channel = self.channels[i]
+
+        channel.frequency = 440
+        channel.volume = 1.0
+        channel.enabled = false
+        channel.phase = 0
+        channel.duration = 0
+    end
+
+    -- Réinitialiser le générateur de bruit
+    self:resetNoise()
+
+    -- Réinitialiser les séquences
+    self.sequence = {}
+    self.sequenceIndex = 1
+    self.sequencePlaying = false
+    self.sequencePaused = false
+    self.sequenceTimer = 0
+
+    -- Réinitialiser les paramètres généraux
+    self.masterVolume = 1.0
+    self.muted = false
+end
+
 return Audio

@@ -1,12 +1,13 @@
-local Graphics = require("api.Graphics")
+local Graphics  = require("api.Graphics")
+local MemoryAPI = require("api.Memory")
 ---@class Program
-local Program = {}
+local Program   = {}
 Program.__index = Program
 
 function Program.new(video)
-    local self = setmetatable({}, Program)
+    local self  = setmetatable({}, Program)
 
-    self.boot = nil
+    self.boot   = nil
     self.fan128 = nil
     self.loaded = false
 
@@ -39,7 +40,11 @@ function Program:load(path)
         triangle      = Graphics.triangle,
         triangle_fill = Graphics.triangle_fill,
         polygone      = Graphics.polygone,
-        polygone_fill = Graphics.polygone_fill
+        polygone_fill = Graphics.polygone_fill,
+
+        -- Accès mémoire
+        peek          = MemoryAPI.peek,
+        poke          = MemoryAPI.poke,
 
     }
 

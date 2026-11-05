@@ -114,6 +114,15 @@ function Input:init()
     print("Manettes détectées :", #self.joysticks)
 end
 
+--- Réinitialise l'état des entrées.
+function Input:reset()
+    self.pressedKeys = {}
+    self.releasedKeys = {}
+
+    self.pressedJoystickButtons = {}
+    self.releasedJoystickButtons = {}
+end
+
 --- Convertit une commande logique en touche physique
 ---@param key "LEFT"|"RIGHT"|"UP"|"DOWN"|"A"|"B"|"START"|"SELECT"|"EXIT"
 ---@return string

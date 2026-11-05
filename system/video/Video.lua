@@ -51,6 +51,11 @@ function Video:init()
     print("VRAM :", self.memory.VRAM_SIZE / 1024, "Ko")
 end
 
+--- Réinitialise l'état interne du système vidéo.
+function Video:reset()
+    self.currentColor = Video.DEFAULT_COLOR
+end
+
 --- Conversion de la VRAM en pixels
 function Video:updateScreen()
     for pixelIndex = 0, Video.PIXEL_COUNT - 1 do
