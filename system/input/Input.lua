@@ -1,4 +1,5 @@
 ---@class Input
+---@field onKeyPressed fun(key: string)|nil
 local Input = {}
 Input.__index = Input
 -------------------------  LOCALES -----------------
@@ -75,7 +76,11 @@ function Input.new()
     self.deadZone = 0.20
 
     love.keypressed = function(key)
-        keypressed(self, key)
+        self.pressedKeys[key] = true
+
+        if self.onKeyPressed then
+            self.onKeyPressed(key)
+        end
     end
 
     love.keyreleased = function(key)
@@ -143,14 +148,14 @@ end
 
 --- Réinitialise les événements clavier
 function Input:update()
---- Réinitialise les événements clavier et manettes
-function Input:update()
-    self.pressedKeys = {}
-    self.releasedKeys = {}
+    --- Réinitialise les événements clavier et manettes
+    function Input:update()
+        self.pressedKeys = {}
+        self.releasedKeys = {}
 
-    self.pressedJoystickButtons = {}
-    self.releasedJoystickButtons = {}
-end
+        self.pressedJoystickButtons = {}
+        self.releasedJoystickButtons = {}
+    end
 end
 
 --- Modifie la touche physique associée à une commande

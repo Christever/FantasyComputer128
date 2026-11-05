@@ -1,78 +1,99 @@
 io.stdout:setvbuf("no")
+
 love.graphics.setDefaultFilter("nearest", "nearest")
 
--- Modules System
-local Memory     = require("system.memory.Memory")
-local CPU        = require("system.cpu.CPU")
-local Video      = require("system.video.Video")
-local Input      = require("system.input.Input")
-local Program    = require("system.Program")
-local Palette    = require("system.video.Palette")
-
--- Tests
-local MemoryTest = require("tests.MemoryTest")
-local CPUTest    = require("tests.CPUTest")
-local VideoTest  = require("tests.VideoTest")
-local BasicTest  = require("tests.BasicTest")
-local AudioTest  = require("tests.AudioTest")
+-- Modules système
+local Config    = require("system.Config")
+local Memory    = require("system.memory.Memory")
+local CPU       = require("system.cpu.CPU")
+local Video     = require("system.video.Video")
+local Input     = require("system.input.Input")
+local Program   = require("system.Program")
+local Startup   = require("system.Startup")
+local Cartridge = require("system.Cartridge")
+local Palette   = require("system.video.Palette")
 
 
-
-
+-- Instances
 local memory
 local cpu
-
 local video
-
----@type Input
 local input
-
 local program
+local startup
+local cartridge
 
 
-
+-- Initialisation
 function love.load()
     print("Fantasy Computer 128")
     print("Initialisation de la machine...")
 
-    Palette.setColor(0, 0, 0, 0)
-    Palette.setColor(1, 255, 0, 0)
-    Palette.setColor(2, 0, 255, 0)
-    Palette.setColor(3, 0, 0, 255)
-    Palette.setColor(4, 255, 255, 255)
-
+    -- Matériel
     memory = Memory.new()
-    cpu    = CPU.new(memory)
-    video  = Video.new(memory)
-    input  = Input.new()
+    cpu = CPU.new(memory)
+    video = Video.new(memory)
+    input = Input.new()
+    input.onKeyPressed = function(key)
+    if key == "f5" and not Config.DEVELOPER_MODE then
+        if startup and startup.finished then
+            local success = cartridge:reload()
+
+            if success then
+                print("Cartouche rechargée !")
+            else
+                print("Erreur lors du rechargement de la cartouche.")
+            end
+        end
+    end
+end
 
     video:init()
     input:init()
-    print("Nombre de manettes :", input:getJoystickCount())
-    print("Manette 1 disponible :", input:hasJoystick(1))
+
+    -- Système de programmes
     program = Program.new(video)
-    program:load("programs/main.lua")
+    cartridge = Cartridge.new(program)
+
+    -- Mode de fonctionnement
+    if Config.DEVELOPER_MODE then
+        -- Chargement direct du programme de développement
+        program:load(Config.PROGRAM_PATH)
+    else
+        -- Démarrage normal de la console
+        startup = Startup.new()
+        startup:draw(video)
+    end
 end
 
+-- Mise à jour
 function love.update(dt)
     input:update()
-    program:update(dt)
-    video:updateScreen()
 
+    if Config.DEVELOPER_MODE then
+        -- Mode développeur
+        program:update(dt)
+    else
+        -- Mode console
+        if not startup.finished then
+            startup:update(dt)
+            startup:draw(video)
+
+            -- Chargement de la cartouche à la fin du démarrage
+            if startup.finished then
+                cartridge:load(Config.CARTRIDGE_PATH)
+            end
+        else
+            -- Exécution de la cartouche
+            program:update(dt)
+        end
+    end
+
+    video:updateScreen()
 end
 
+-- Affichage
 function love.draw()
     video:draw()
 end
 
-function love.keypressed(key)
-
-end
-
-function love.keyreleased(key)
-    -- Input.keyreleased(key)
-end
-
-function love.mousepressed(x, y, btn)
-
-end

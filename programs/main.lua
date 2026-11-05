@@ -1,9 +1,9 @@
 function BOOT()
-    cls(0)
+   
 end
 
 function FAN128()
-    cls(0)
+   
 
     for i = 0, 15 do
         local x = 20 + (i % 8) * 36

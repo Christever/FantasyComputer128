@@ -56,14 +56,8 @@ function Program:load(path)
         return false
     end
 
-    self.boot = environment.BOOT
     self.fan128 = environment.FAN128
-
     self.loaded = true
-
-    if self.boot then
-        self.boot()
-    end
 
     return true
 end
@@ -72,6 +66,12 @@ function Program:update(dt)
     if self.loaded and self.fan128 then
         self.fan128()
     end
+end
+
+--- Arrête le programme en cours.
+function Program:stop()
+    self.fan128 = nil
+    self.loaded = false
 end
 
 return Program
