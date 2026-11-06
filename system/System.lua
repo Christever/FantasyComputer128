@@ -8,6 +8,7 @@ local Startup   = require("system.Startup")
 local Cartridge = require("system.Cartridge")
 local Config    = require("system.Config")
 local Logger    = require("system.Logger")
+local InputAPI  = require("api.Input")
 local MemoryAPI = require("api.Memory")
 
 ---@class System
@@ -80,6 +81,8 @@ function System:init()
 
     self.video:init()
     self.input:init()
+
+    InputAPI.init(self.input)
 
     self.program            = Program.new(self.video)
     self.cartridge          = Cartridge.new(self.program)

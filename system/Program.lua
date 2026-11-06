@@ -1,6 +1,8 @@
 local Graphics  = require("api.Graphics")
 local MemoryAPI = require("api.Memory")
 local Logger    = require("system.Logger")
+local InputAPI  = require("api.Input")
+
 ---@class Program
 local Program   = {}
 Program.__index = Program
@@ -26,6 +28,7 @@ function Program:load(path)
     end
 
     local environment = {
+        -- Graphique
         cls           = Graphics.cls,
         palette       = Graphics.palette,
         color         = Graphics.color,
@@ -42,6 +45,10 @@ function Program:load(path)
         triangle_fill = Graphics.triangle_fill,
         polygone      = Graphics.polygone,
         polygone_fill = Graphics.polygone_fill,
+
+        -- Input
+        btn           = InputAPI.btn,
+        btnp          = InputAPI.btnp,
 
         -- Accès mémoire
         peek          = MemoryAPI.peek,

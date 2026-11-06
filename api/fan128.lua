@@ -112,6 +112,27 @@ function polygone(points, color) end
 ---@param color? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
 function polygone_fill(points, color) end
 
+---------------------- INPUTS ---------------------------------
+---@alias Button
+---| "LEFT"
+---| "RIGHT"
+---| "UP"
+---| "DOWN"
+---| "A"
+---| "B"
+---| "START"
+---| "SELECT"
+
+--- Vérifie si une commande est maintenue.
+---@param button Button
+---@return boolean
+function btn(button) end
+
+--- Vérifie si une commande vient d'être pressée.
+---@param button Button
+---@return boolean
+function btnp(button) end
+
 ----------------------  MEMOIRE  ------------------------------
 --- Lit un octet à une adresse mémoire.
 ---@param address integer Adresse CPU (0 à 65535)
