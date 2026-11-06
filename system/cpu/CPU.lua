@@ -74,9 +74,7 @@ end
 -- Lire une instruction en mémoire
 function CPU:fetch()
     local instruction = self.memory:read(self.PC)
-
-    self.PC = self.PC + 1
-
+    self.PC = (self.PC + 1) % 0x10000
     return instruction
 end
 
@@ -88,7 +86,7 @@ function CPU:decode(opcode)
         end
     end
 
-    
+
     Logger.raise("Instruction inconnue : " .. tostring(opcode))
 end
 
@@ -270,10 +268,13 @@ function CPU:execute(instruction)
         self:setRegister("B", value)
     elseif instruction == "ADD" then
         local result = self.A + self.B
+        local result8 = result % 256
+
         self.flags.C = result > 255
-        self.flags.Z = (result % 256) == 0
-        self:updateParity(result % 256)
-        self:setRegister("A", result % 256)
+        self.flags.Z = result8 == 0
+        self.flags.S = result8 >= 128
+        self:updateParity(result8)
+        self:setRegister("A", result8)
     elseif instruction == "SUB" then
         local result = self.A - self.B
         self.flags.C = result < 0
