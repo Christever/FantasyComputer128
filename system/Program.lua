@@ -60,6 +60,18 @@ function Program:load(path)
         print("Erreur d'execution :", result)
         return false
     end
+    -- Initialisation de la cartouche
+    if environment.BOOT then
+        local bootSuccess, bootError = pcall(environment.BOOT)
+
+        if not bootSuccess then
+            print("Erreur BOOT :", bootError)
+            self.fan128 = nil
+            self.loaded = false
+            self.errorMessage = bootError
+            return false
+        end
+    end
 
     self.fan128 = environment.FAN128
     self.loaded = true

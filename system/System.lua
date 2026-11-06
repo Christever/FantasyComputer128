@@ -43,10 +43,11 @@ function System:init()
     self.memory = Memory.new()
     MemoryAPI.init(self.memory)
 
-    self.cpu   = CPU.new(self.memory)
-    self.video = Video.new(self.memory)
-    self.input = Input.new()
-    self.audio = Audio.new()
+    self.cpu            = CPU.new(self.memory)
+    self.video          = Video.new(self.memory)
+    self.input          = Input.new()
+    self.audio          = Audio.new()
+    self.cartridgeError = nil
 
     self.video:init()
     self.input:init()
@@ -150,7 +151,11 @@ function System:update(dt)
         self.startup:draw(self.video)
 
         if self.startup.finished then
-            self.cartridge:load(Config.CARTRIDGE_PATH)
+            local success = self.cartridge:load(Config.CARTRIDGE_PATH)
+
+            if not success then
+                self.cartridgeError = self.program.errorMessage
+            end
         end
     else
         self.program:update(dt)
@@ -161,6 +166,15 @@ end
 
 --- Dessine l'image de la console.
 function System:draw()
+    if self.cartridgeError then
+        self.video:clear(0)
+        self.video:drawText(80, 60, "FANTASY COMPUTER 128", 1)
+        self.video:drawText(100, 90, "CARTRIDGE ERROR", 2)
+        self.video:drawText(58, 120, "BOOT INITIALIZATION FAILED", 1)
+
+        self.video:drawRect(30, 45, 260, 100, 2)
+    end
+
     self.video:draw()
 end
 

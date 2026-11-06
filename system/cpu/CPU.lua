@@ -102,6 +102,7 @@ function CPU:updateParity(value)
     end
 
     self.flags.P = (count % 2 == 0)
+    self:updateFlagsRegister()
 end
 
 function CPU:updateParity16(value)
@@ -116,6 +117,27 @@ function CPU:updateParity16(value)
     end
 
     self.flags.P = count % 2 == 0
+    self:updateFlagsRegister()
+end
+
+function CPU:updateFlagsRegister()
+    self.F = 0
+
+    if self.flags.Z then
+        self.F = bit.bor(self.F, 0x01)
+    end
+
+    if self.flags.C then
+        self.F = bit.bor(self.F, 0x02)
+    end
+
+    if self.flags.S then
+        self.F = bit.bor(self.F, 0x04)
+    end
+
+    if self.flags.P then
+        self.F = bit.bor(self.F, 0x08)
+    end
 end
 
 -- Exécuter une instruction
