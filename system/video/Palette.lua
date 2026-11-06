@@ -76,6 +76,31 @@ function Palette.getColor(index)
     return Palette.colors[index]
 end
 
+--- Recherche la couleur la plus proche dans la palette.
+---@param r number
+---@param g number
+---@param b number
+---@return integer
+function Palette.findClosestColor(r, g, b)
+    local bestIndex = 0
+    local bestDistance = math.huge
+
+    for index, color in pairs(Palette.colors) do
+        local dr = r - color.r
+        local dg = g - color.g
+        local db = b - color.b
+
+        local distance = dr * dr + dg * dg + db * db
+
+        if distance < bestDistance then
+            bestDistance = distance
+            bestIndex = index
+        end
+    end
+
+    return bestIndex
+end
+
 -- Initialisation automatique
 Palette.init()
 

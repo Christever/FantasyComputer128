@@ -1,11 +1,66 @@
----@class Graphics
-local Graphics = {}
+local Sprite      = require("system.video.Sprite")
+local Palette     = require("system.video.Palette")
+local SpriteSheet = require("system.video.SpriteSheet")
 
-local Palette = require("system.video.Palette")
+---@class Graphics
+local Graphics    = {}
+
 
 function Graphics.init(video)
     Graphics.video = video
 end
+
+----------------------  SPRITES --------------------------------
+
+--- Crée un nouveau sprite.
+---@param width number Largeur du sprite.
+---@param height number Hauteur du sprite.
+---@param colorIndex number|nil Couleur initiale.
+---@return Sprite
+function Graphics.sprite(width, height, colorIndex)
+    return Sprite.new(width, height, colorIndex)
+end
+
+--- Affiche un sprite à l'écran.
+---@param sprite Sprite|SpriteSheet Sprite ou feuille de sprites.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param flipX boolean|nil Retourne horizontalement.
+---@param flipY boolean|nil Retourne verticalement.
+---@param index integer|nil Index du sprite dans la spritesheet.
+function Graphics.spr(sprite, x, y, flipX, flipY, index)
+    local selectedSprite
+
+    if index ~= nil then
+        ---@cast sprite SpriteSheet
+        selectedSprite = sprite:getSprite(index)
+    else
+        ---@cast sprite Sprite
+        selectedSprite = sprite
+    end
+
+    if not selectedSprite then
+        return
+    end
+
+    Graphics.video:drawSprite(selectedSprite, x, y, flipX, flipY)
+end
+
+--- Charge et découpe une feuille de sprites.
+---@param path string Chemin de l'image.
+---@param spriteWidth number Largeur d'un sprite.
+---@param spriteHeight number Hauteur d'un sprite.
+---@return SpriteSheet
+function Graphics.spritesheet(path, spriteWidth, spriteHeight)
+    local sheet = SpriteSheet.new()
+
+    sheet:load(path)
+    sheet:split(spriteWidth, spriteHeight)
+
+    return sheet
+end
+
+---------------------  DIVERS ------------------------------
 
 function Graphics.palette(index, r, g, b)
     Palette.setColor(index, r, g, b)
@@ -19,6 +74,8 @@ function Graphics.color(color)
     color = color or 0
     Graphics.video:setColor(color)
 end
+
+-----------------------  FORMES BASIQUES  ----------------------
 
 function Graphics.pixel(x, y, color)
     local currentColor = Graphics.video:getColor()

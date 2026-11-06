@@ -46,6 +46,11 @@ function Program:load(path)
         polygone          = Graphics.polygone,
         polygone_fill     = Graphics.polygone_fill,
 
+        -- SPRITES
+        sprite            = Graphics.sprite,
+        spr               = Graphics.spr,
+        spritesheet       = Graphics.spritesheet,
+
         -- Input
         btn               = InputAPI.btn,
         btnp              = InputAPI.btnp,

@@ -15,6 +15,8 @@ function cls(color) end
 ---@param color integer
 function color(color) end
 
+-----------------------  FORMES BASE --------------------------------
+
 --- Dessine un pixel.
 ---@param x number Position horizontale.
 ---@param y number Position verticale.
@@ -111,6 +113,29 @@ function polygone(points, color) end
 ---@param points table Liste de sommets { x = number, y = number }.
 ---@param color? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
 function polygone_fill(points, color) end
+
+---------------------- SPRITES --------------------------------
+
+---@param width number Largeur du sprite.
+---@param height number Hauteur du sprite.
+---@param colorIndex number|nil Couleur initiale.
+---@return Sprite
+function sprite(width, height, colorIndex) end
+
+--- Affiche un sprite ou un sprite provenant d'une spritesheet.
+---@param sprite Sprite|SpriteSheet Sprite ou feuille de sprites.
+---@param x number Position horizontale.
+---@param y number Position verticale.
+---@param flipX boolean|nil Retourne horizontalement.
+---@param flipY boolean|nil Retourne verticalement.
+---@param index integer|nil Index du sprite dans la spritesheet.
+function spr(sprite, x, y, flipX, flipY, index) end
+
+---@param path string Chemin de l'image.
+---@param spriteWidth number Largeur d'un sprite.
+---@param spriteHeight number Hauteur d'un sprite.
+---@return SpriteSheet
+function spritesheet(path, spriteWidth, spriteHeight) end
 
 ---------------------- INPUTS ---------------------------------
 ---@alias Button
