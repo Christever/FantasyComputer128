@@ -158,14 +158,11 @@ end
 
 --- Réinitialise les événements clavier
 function Input:update()
-    --- Réinitialise les événements clavier et manettes
-    function Input:update()
         self.pressedKeys = {}
         self.releasedKeys = {}
 
         self.pressedJoystickButtons = {}
         self.releasedJoystickButtons = {}
-    end
 end
 
 --- Modifie la touche physique associée à une commande
