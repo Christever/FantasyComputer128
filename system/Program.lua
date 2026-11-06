@@ -1,5 +1,6 @@
 local Graphics  = require("api.Graphics")
 local MemoryAPI = require("api.Memory")
+local Logger    = require("system.Logger")
 ---@class Program
 local Program   = {}
 Program.__index = Program
@@ -65,7 +66,8 @@ function Program:load(path)
         local bootSuccess, bootError = pcall(environment.BOOT)
 
         if not bootSuccess then
-            print("Erreur BOOT :", bootError)
+            print("CARTRIDGE BOOT ERROR :", bootError)
+            Logger.error("CARTRIDGE BOOT ERROR : " .. tostring(bootError))
             self.fan128 = nil
             self.loaded = false
             self.errorMessage = bootError
@@ -88,7 +90,8 @@ function Program:update(dt)
             self.fan128 = nil
             self.loaded = false
 
-            print("Erreur FAN128 :", errorMessage)
+            print("CARTRIDGE RUNTIME ERROR :", errorMessage)
+            Logger.error("CARTRIDGE RUNTIME ERROR : " .. tostring(errorMessage))
         end
     end
 end
