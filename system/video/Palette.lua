@@ -1,3 +1,4 @@
+local Logger = require("system.Logger")
 ---@class Palette
 local Palette = {}
 
@@ -57,7 +58,7 @@ end
 ---@param g number
 ---@param b number
 function Palette.setColor(index, r, g, b)
-    assert(index >= 0 and index < 256, "Index couleur invalide")
+    Logger.assert(index >= 0 and index < 256, "Index couleur invalide")
 
     Palette.colors[index] = {
         r = r,
@@ -70,7 +71,7 @@ end
 ---@param index integer
 ---@return table
 function Palette.getColor(index)
-    assert(index >= 0 and index < 256, "Index couleur invalide")
+    Logger.assert(index >= 0 and index < 256, "Index couleur invalide")
 
     return Palette.colors[index]
 end

@@ -1,3 +1,4 @@
+local Logger = require("system.Logger")
 ---@class Sprite
 local Sprite = {}
 
@@ -8,8 +9,8 @@ local Sprite = {}
 ---@param colorIndex? integer Couleur initiale (0-255). Par défaut transparent.
 ---@return Sprite
 function Sprite.new(width, height, colorIndex)
-    assert(width > 0, "Largeur invalide")
-    assert(height > 0, "Hauteur invalide")
+    Logger.assert(width > 0, "Largeur invalide")
+    Logger.assert(height > 0, "Hauteur invalide")
 
     local self            = setmetatable({}, { __index = Sprite })
 
@@ -36,9 +37,9 @@ end
 ---@param y integer Coordonnée Y (base 1).
 ---@param colorIndex integer Index de couleur (0-255) ou -1 pour transparent.
 function Sprite:setPixel(x, y, colorIndex)
-    assert(x >= 1 and x <= self.width, "Coordonnée X invalide")
-    assert(y >= 1 and y <= self.height, "Coordonnée Y invalide")
-    assert(colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255), "Couleur invalide")
+    Logger.assert(x >= 1 and x <= self.width, "Coordonnée X invalide")
+    Logger.assert(y >= 1 and y <= self.height, "Coordonnée Y invalide")
+    Logger.assert(colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255), "Couleur invalide")
 
     self.pixels[y][x] = colorIndex
 end
@@ -58,7 +59,7 @@ end
 --- Définit la couleur transparente du sprite.
 ---@param colorIndex integer Index de couleur (0-255) ou -1 pour aucune couleur transparente.
 function Sprite:setTransparentColor(colorIndex)
-    assert(
+    Logger.assert(
         colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255),
         "Couleur transparente invalide"
     )
@@ -75,7 +76,7 @@ end
 --- Remplit entièrement le sprite avec une couleur.
 ---@param colorIndex integer Index de couleur (0-255) ou -1 pour transparent.
 function Sprite:clear(colorIndex)
-    assert(
+    Logger.assert(
         colorIndex == -1 or (colorIndex >= 0 and colorIndex <= 255),
         "Couleur invalide"
     )

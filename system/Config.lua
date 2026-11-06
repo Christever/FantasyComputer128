@@ -13,4 +13,9 @@ Config.PROGRAM_PATH = "programs/main.lua"
 -- Cartouche
 Config.CARTRIDGE_PATH = "cartridges/main.lua"
 
+Config.PLATFORM = "desktop"
+
+-- Mode debug
+Config.DEBUG_MODE = false
+
 return Config

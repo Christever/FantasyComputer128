@@ -1,3 +1,4 @@
+local Logger = require("system.Logger")
 ---@class Memory
 local Memory = {}
 
@@ -44,7 +45,7 @@ end
 ---@param address integer
 ---@return "ROM"|"RAM"|"VRAM"|"BANK"
 function Memory.getRegion(address)
-    assert(address >= 0 and address < Memory.ADDRESS_SPACE,
+    Logger.assert(address >= 0 and address < Memory.ADDRESS_SPACE,
         "Adresse CPU invalide")
 
     if address <= Memory.ROM_END then
@@ -62,7 +63,7 @@ end
 ---@param address integer
 ---@return integer
 function Memory.getOffset(address)
-    assert(address >= 0 and address < Memory.ADDRESS_SPACE,
+    Logger.assert(address >= 0 and address < Memory.ADDRESS_SPACE,
         "Adresse CPU invalide")
 
     return address % Memory.BANK_SIZE
@@ -100,7 +101,7 @@ end
 ---@param address integer
 ---@return integer
 function Memory:readRAM(address)
-    assert(address >= 0 and address < Memory.RAM_SIZE,
+    Logger.assert(address >= 0 and address < Memory.RAM_SIZE,
         "Adresse RAM invalide")
 
     return self.ram[address + 1]
@@ -110,10 +111,10 @@ end
 ---@param address integer
 ---@param value integer
 function Memory:writeRAM(address, value)
-    assert(address >= 0 and address < Memory.RAM_SIZE,
+    Logger.assert(address >= 0 and address < Memory.RAM_SIZE,
         "Adresse RAM invalide")
 
-    assert(value >= 0 and value <= 255,
+    Logger.assert(value >= 0 and value <= 255,
         "Valeur invalide")
 
     self.ram[address + 1] = value
@@ -123,7 +124,7 @@ end
 ---@param address integer
 ---@return integer
 function Memory:readROM(address)
-    assert(address >= 0 and address < Memory.ROM_SIZE,
+    Logger.assert(address >= 0 and address < Memory.ROM_SIZE,
         "Adresse ROM invalide")
 
     return self.rom[address + 1]
@@ -131,14 +132,14 @@ end
 
 -- Écriture dans la ROM interdite
 function Memory:writeROM(address, value)
-    error("Impossible d'ecrire dans la ROM")
+    Logger.raise("Impossible d'ecrire dans la ROM")
 end
 
 -- Lecture directe de la VRAM
 ---@param address integer
 ---@return integer
 function Memory:readVRAM(address)
-    assert(address >= 0 and address < Memory.VRAM_SIZE,
+    Logger.assert(address >= 0 and address < Memory.VRAM_SIZE,
         "Adresse VRAM invalide")
 
     return self.vram[address + 1]
@@ -148,10 +149,10 @@ end
 ---@param address integer
 ---@param value integer
 function Memory:writeVRAM(address, value)
-    assert(address >= 0 and address < Memory.VRAM_SIZE,
+    Logger.assert(address >= 0 and address < Memory.VRAM_SIZE,
         "Adresse VRAM invalide")
 
-    assert(value >= 0 and value <= 255,
+    Logger.assert(value >= 0 and value <= 255,
         "Valeur invalide")
 
     self.vram[address + 1] = value
@@ -182,7 +183,7 @@ function Memory:read(address)
 
         return self.ram[physicalAddress + 1]
     else
-        error("Région mémoire inconnue")
+        Logger.raise("Région mémoire inconnue")
     end
 end
 
@@ -190,14 +191,14 @@ end
 ---@param address integer
 ---@param value integer
 function Memory:write(address, value)
-    assert(value >= 0 and value <= 255,
+    Logger.assert(value >= 0 and value <= 255,
         "Valeur invalide")
 
     local region = Memory.getRegion(address)
     local offset = Memory.getOffset(address)
 
     if region == "ROM" then
-        error("Impossible d'ecrire dans la ROM")
+        Logger.raise("Impossible d'ecrire dans la ROM")
     elseif region == "RAM" then
         self.ram[offset + 1] = value
     elseif region == "VRAM" then
@@ -216,7 +217,7 @@ end
 -- Sélection de la banque RAM
 ---@param bank integer
 function Memory:setRAMBank(bank)
-    assert(bank >= 0 and bank < Memory.RAM_BANKS - 1,
+    Logger.assert(bank >= 0 and bank < Memory.RAM_BANKS - 1,
         "Banque RAM invalide")
 
     self.ramBank = bank
@@ -225,7 +226,7 @@ end
 -- Sélection de la banque VRAM
 ---@param bank integer
 function Memory:setVRAMBank(bank)
-    assert(bank >= 0 and bank < Memory.VRAM_BANKS,
+    Logger.assert(bank >= 0 and bank < Memory.VRAM_BANKS,
         "Banque VRAM invalide")
 
     self.vramBank = bank
@@ -234,7 +235,7 @@ end
 -- Sélection de la banque ROM
 ---@param bank integer
 function Memory:setROMBank(bank)
-    assert(bank >= 0 and bank < Memory.ROM_BANKS,
+    Logger.assert(bank >= 0 and bank < Memory.ROM_BANKS,
         "Banque ROM invalide")
 
     self.romBank = bank

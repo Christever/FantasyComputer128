@@ -1,3 +1,4 @@
+local Logger = require("system.Logger")
 ---@class Input
 ---@field onKeyPressed fun(key: string)|nil
 local Input = {}
@@ -129,7 +130,7 @@ end
 function Input:getKey(key)
     local physicalKey = self.KEYS[key]
 
-    assert(physicalKey, "Commande clavier inconnue : " .. tostring(key))
+    Logger.assert(physicalKey, "Commande clavier inconnue : " .. tostring(key))
 
     return physicalKey
 end
@@ -171,8 +172,8 @@ end
 ---@param key "LEFT"|"RIGHT"|"UP"|"DOWN"|"A"|"B"|"START"|"SELECT"|"EXIT"
 ---@param physicalKey string
 function Input:setKey(key, physicalKey)
-    assert(self.KEYS[key], "Commande clavier inconnue : " .. tostring(key))
-    assert(type(physicalKey) == "string", "Touche physique invalide")
+    Logger.assert(self.KEYS[key], "Commande clavier inconnue : " .. tostring(key))
+    Logger.assert(type(physicalKey) == "string", "Touche physique invalide")
 
     self.KEYS[key] = physicalKey
 end
@@ -284,7 +285,7 @@ end
 --- Modifie la zone morte des sticks analogiques
 ---@param value number
 function Input:setDeadZone(value)
-    assert(value >= 0 and value < 1, "Zone morte invalide")
+    Logger.assert(value >= 0 and value < 1, "Zone morte invalide")
     self.deadZone = value
 end
 

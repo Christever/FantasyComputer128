@@ -1,3 +1,4 @@
+local Logger = require("system.Logger")
 ---@class MemoryAPI
 local MemoryAPI = {}
 
@@ -13,7 +14,7 @@ end
 ---@param address integer
 ---@return integer
 function MemoryAPI.peek(address)
-    assert(memory, "API mémoire non initialisée")
+    Logger.assert(memory, "API mémoire non initialisée")
 
     return memory:read(address)
 end
@@ -22,7 +23,7 @@ end
 ---@param address integer
 ---@param value integer
 function MemoryAPI.poke(address, value)
-    assert(memory, "API mémoire non initialisée")
+    Logger.assert(memory, "API mémoire non initialisée")
 
     memory:write(address, value)
 end

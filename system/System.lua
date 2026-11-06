@@ -7,6 +7,7 @@ local Program   = require("system.Program")
 local Startup   = require("system.Startup")
 local Cartridge = require("system.Cartridge")
 local Config    = require("system.Config")
+local Logger    = require("system.Logger")
 local MemoryAPI = require("api.Memory")
 
 ---@class System
@@ -41,7 +42,7 @@ end
 function System:init()
     self.memory = Memory.new()
     MemoryAPI.init(self.memory)
-    
+
     self.cpu   = CPU.new(self.memory)
     self.video = Video.new(self.memory)
     self.input = Input.new()
@@ -96,6 +97,17 @@ end
 --- Redémarre la console.
 ---@param mode "cold"|"warm"
 function System:reset(mode)
+    Logger.info("FANTASY COMPUTER 128")
+    Logger.info("SYSTEM RESET")
+
+    if mode == "warm" then
+        Logger.info("BOOT MODE : WARM")
+        Logger.info("RAM : PRESERVED")
+    else
+        Logger.info("BOOT MODE : COLD")
+        Logger.info("RAM : CLEARED")
+    end
+
     -- Arrêter le programme actuel
     self.cartridge:unload()
 
@@ -105,7 +117,7 @@ function System:reset(mode)
     self.input:reset()
     self.audio:reset()
 
-    -- Réinitialisation m"moire
+    -- Réinitialisation mémoire
     if mode == "cold" then
         self.memory:clear()
     else
@@ -116,8 +128,13 @@ function System:reset(mode)
     self:start(mode)
 end
 
---- Initialise et démarre la console.
 function System:boot()
+    Logger.init()
+    Logger.info("FANTASY COMPUTER 128")
+    Logger.info("SYSTEM BOOT")
+    Logger.info("BOOT MODE : COLD")
+    Logger.info("INITIALIZING HARDWARE...")
+
     self:init()
     self:start("cold")
 end

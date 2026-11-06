@@ -1,5 +1,5 @@
 local bit = require("bit")
-
+local Logger = require("system.Logger")
 ---@class CPU
 local CPU = {}
 
@@ -88,7 +88,8 @@ function CPU:decode(opcode)
         end
     end
 
-    error("Instruction inconnue : " .. tostring(opcode))
+    
+    Logger.raise("Instruction inconnue : " .. tostring(opcode))
 end
 
 function CPU:updateParity(value)
@@ -249,7 +250,7 @@ function CPU:execute(instruction)
     local cycles = instructionCycles[instruction]
 
     if not cycles then
-        error("Cycles inconnus pour l'instruction : " .. instruction)
+        Logger.raise("Cycles inconnus pour l'instruction : " .. instruction)
     end
 
     self.cycles               = self.cycles + cycles
@@ -336,7 +337,7 @@ function CPU:execute(instruction)
         local register = REGISTER_NAMES[registerCode]
 
         if not register then
-            error("Registre invalide pour PUSH")
+            Logger.raise("Registre invalide pour PUSH")
         end
 
         local value = self:getRegister(register)
@@ -347,7 +348,7 @@ function CPU:execute(instruction)
         local registerCode = self:fetch()
         local register = REGISTER_NAMES[registerCode]
         if not register then
-            error("Registre invalide pour POP")
+            Logger.raise("Registre invalide pour POP")
         end
 
         local value = self.memory:read(self.SP)
@@ -360,7 +361,7 @@ function CPU:execute(instruction)
         local register = REGISTER_NAMES[registerCode]
 
         if not register then
-            error("Registre invalide pour INC")
+            Logger.raise("Registre invalide pour INC")
         end
 
         local result = self:getRegister(register) + 1
@@ -376,7 +377,7 @@ function CPU:execute(instruction)
         local register = REGISTER_NAMES[registerCode]
 
         if not register then
-            error("Registre invalide pour DEC")
+            Logger.raise("Registre invalide pour DEC")
         end
 
         local result = self:getRegister(register) - 1
@@ -983,7 +984,7 @@ end
 ---@param name "A"|"B"|"C"|"D"|"E"|"H"|"L"|"F"
 ---@param value integer  @`>=0` and `<=255`
 function CPU:setRegister(name, value)
-    assert(value >= 0 and value <= 255,
+    Logger.assert(value >= 0 and value <= 255,
         "Valeur de registre invalide")
 
     self[name] = value
@@ -999,8 +1000,7 @@ end
 ---@param name "PC"|"SP"|"IX"|"IY"|"HL"|"DE"
 ---@param value integer  @`>=0` and `<=65535`
 function CPU:setRegister16(name, value)
-    print("DEBUG setRegister16:", name, value)
-    assert(value >= 0 and value <= 65535,
+    Logger.assert(value >= 0 and value <= 65535,
         "Valeur de registre 16 bits invalide")
 
     if name == "HL" then

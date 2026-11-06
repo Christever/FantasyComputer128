@@ -2,6 +2,7 @@ local Palette       = require("system.video.Palette")
 local Memory        = require("system.memory.Memory")
 local Font          = require("system.video.Font")
 local Sprite        = require("system.video.Sprite")
+local Logger        = require("system.Logger")
 
 ---@class Video
 local Video         = {}
@@ -489,7 +490,7 @@ end
 function Video:drawPolygon(points, colorIndex)
     colorIndex = colorIndex or self.currentColor
 
-    assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
+    Logger.assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
 
     for i = 1, #points do
         local current = points[i]
@@ -511,7 +512,7 @@ end
 function Video:fillPolygon(points, colorIndex)
     colorIndex = colorIndex or self.currentColor
 
-    assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
+    Logger.assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
 
     local minY = points[1].y
     local maxY = points[1].y
