@@ -133,6 +133,32 @@ function btn(button) end
 ---@return boolean
 function btnp(button) end
 
+--- Vérifie si une commande vient d'être relâchée.
+---@param button Button
+---@return boolean
+function btnr(button) end
+
+--- Retourne la valeur d'un axe analogique.
+---@param joystickIndex integer
+---@param axis string
+---@return number
+function axis(joystickIndex, axis) end
+
+--- Retourne une direction numérique à partir d'un axe analogique.
+---@param joystickIndex integer
+---@param axis string
+---@return integer
+function direction(joystickIndex, axis) end
+
+--- Retourne le nombre de manettes connectées.
+---@return integer
+function joystickCount() end
+
+--- Vérifie si une manette est connectée.
+---@param joystickIndex integer
+---@return boolean
+function joystickConnected(joystickIndex) end
+
 ----------------------  MEMOIRE  ------------------------------
 --- Lit un octet à une adresse mémoire.
 ---@param address integer Adresse CPU (0 à 65535)

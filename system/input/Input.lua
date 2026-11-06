@@ -15,6 +15,15 @@ local function keyreleased(self, key)
 end
 
 local function joystickadded(self, joystick)
+    local id = joystick:getID()
+
+    for _, current in ipairs(self.joysticks) do
+        if current:getID() == id then
+            print("Manette déjà connectée :", joystick:getName())
+            return
+        end
+    end
+
     table.insert(self.joysticks, joystick)
     print("Manette connectée :", joystick:getName())
 end
@@ -70,6 +79,17 @@ function Input.new()
         START  = "return",
         SELECT = "space",
         EXIT   = "escape"
+    }
+
+    self.GAMEPAD_BUTTONS = {
+        LEFT   = "dpleft",
+        RIGHT  = "dpright",
+        UP     = "dpup",
+        DOWN   = "dpdown",
+        A      = "a",
+        B      = "b",
+        START  = "start",
+        SELECT = "back"
     }
     self.pressedJoystickButtons = {}
     self.releasedJoystickButtons = {}
@@ -158,11 +178,11 @@ end
 
 --- Réinitialise les événements clavier
 function Input:update()
-        self.pressedKeys = {}
-        self.releasedKeys = {}
+    self.pressedKeys = {}
+    self.releasedKeys = {}
 
-        self.pressedJoystickButtons = {}
-        self.releasedJoystickButtons = {}
+    self.pressedJoystickButtons = {}
+    self.releasedJoystickButtons = {}
 end
 
 --- Modifie la touche physique associée à une commande

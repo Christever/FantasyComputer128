@@ -29,30 +29,37 @@ function Program:load(path)
 
     local environment = {
         -- Graphique
-        cls           = Graphics.cls,
-        palette       = Graphics.palette,
-        color         = Graphics.color,
-        pixel         = Graphics.pixel,
-        print         = Graphics.print,
-        line          = Graphics.line,
-        rect_fill     = Graphics.rect_fill,
-        rect          = Graphics.rect,
-        circle        = Graphics.circle,
-        circle_fill   = Graphics.circle_fill,
-        ellipse       = Graphics.ellipse,
-        ellipse_fill  = Graphics.ellipse_fill,
-        triangle      = Graphics.triangle,
-        triangle_fill = Graphics.triangle_fill,
-        polygone      = Graphics.polygone,
-        polygone_fill = Graphics.polygone_fill,
+        cls               = Graphics.cls,
+        palette           = Graphics.palette,
+        color             = Graphics.color,
+        pixel             = Graphics.pixel,
+        print             = Graphics.print,
+        line              = Graphics.line,
+        rect_fill         = Graphics.rect_fill,
+        rect              = Graphics.rect,
+        circle            = Graphics.circle,
+        circle_fill       = Graphics.circle_fill,
+        ellipse           = Graphics.ellipse,
+        ellipse_fill      = Graphics.ellipse_fill,
+        triangle          = Graphics.triangle,
+        triangle_fill     = Graphics.triangle_fill,
+        polygone          = Graphics.polygone,
+        polygone_fill     = Graphics.polygone_fill,
 
         -- Input
-        btn           = InputAPI.btn,
-        btnp          = InputAPI.btnp,
+        btn               = InputAPI.btn,
+        btnp              = InputAPI.btnp,
+        btnr              = InputAPI.btnr,
+
+        --- JOYSTICK
+        axis              = InputAPI.axis,
+        direction         = InputAPI.direction,
+        joystickCount     = InputAPI.joystickCount,
+        joystickConnected = InputAPI.joystickConnected,
 
         -- Accès mémoire
-        peek          = MemoryAPI.peek,
-        poke          = MemoryAPI.poke,
+        peek              = MemoryAPI.peek,
+        poke              = MemoryAPI.poke,
 
     }
 
