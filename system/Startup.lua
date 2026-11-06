@@ -35,7 +35,7 @@ function Startup:draw(video)
 
     -- Titre principal
     video:setColor(3)
-    video:drawText(85, 65, "FANTASY 128")
+    video:drawText(115, 65, "FANTASY 128")
 
     -- Sous-titre
     video:setColor(4)
@@ -55,7 +55,7 @@ function Startup:draw(video)
 
     local loadingText = "LOADING" .. string.rep(".", dots)
 
-    video:drawText(115, 165, loadingText)
+    video:drawText(120, 165, loadingText)
 end
 
 return Startup

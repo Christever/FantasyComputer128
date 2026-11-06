@@ -22,6 +22,35 @@ local MemoryAPI = require("api.Memory")
 local System    = {}
 System.__index  = System
 
+-------------------------- LOCALES -----------------------------------
+
+--- Découpe un texte en lignes de longueur maximale.
+---@param text string
+---@param maxLength integer
+---@return table
+local function wrapText(text, maxLength)
+    local lines = {}
+
+    while #text > maxLength do
+        local splitAt = maxLength
+
+        local space = text:sub(1, maxLength):match(".*()%s")
+
+        if space then
+            splitAt = space
+        end
+
+        table.insert(lines, text:sub(1, splitAt - 1))
+        text = text:sub(splitAt + 1)
+    end
+
+    table.insert(lines, text)
+
+    return lines
+end
+
+----------------------------------------------------------------------
+
 ---@return System
 function System.new()
     local self     = setmetatable({}, System)
@@ -171,8 +200,13 @@ function System:draw()
         self.video:drawText(80, 60, "FANTASY COMPUTER 128", 1)
         self.video:drawText(100, 90, "CARTRIDGE ERROR", 2)
         self.video:drawText(58, 120, "BOOT INITIALIZATION FAILED", 1)
+        local errorLines = wrapText(tostring(self.cartridgeError), 30)
 
-        self.video:drawRect(30, 45, 260, 100, 2)
+        for i, line in ipairs(errorLines) do
+            self.video:drawText(40, 135 + (i - 1) * 12, line, 12)
+        end
+
+        self.video:drawRect(30, 45, 260, 150, 2)
     end
 
     self.video:draw()
