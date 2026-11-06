@@ -1,13 +1,18 @@
 local Sprite      = require("system.video.Sprite")
 local Palette     = require("system.video.Palette")
 local SpriteSheet = require("system.video.SpriteSheet")
+local Animation   = require("system.video.Animation")
+local Logger      = require("system.Logger")
 
 ---@class Graphics
 local Graphics    = {}
 
 
-function Graphics.init(video)
+---@param video Video
+---@param animationManager AnimationManager
+function Graphics.init(video, animationManager)
     Graphics.video = video
+    Graphics.animationManager = animationManager
 end
 
 ----------------------  SPRITES --------------------------------
@@ -31,9 +36,15 @@ end
 function Graphics.spr(sprite, x, y, flipX, flipY, index)
     local selectedSprite
 
+    x = math.floor(x)
+    y = math.floor(y)
+
     if index ~= nil then
         ---@cast sprite SpriteSheet
         selectedSprite = sprite:getSprite(index)
+    elseif sprite.getSprite then
+        ---@cast sprite Animation
+        selectedSprite = sprite:getSprite()
     else
         ---@cast sprite Sprite
         selectedSprite = sprite
@@ -60,6 +71,62 @@ function Graphics.spritesheet(path, spriteWidth, spriteHeight)
     return sheet
 end
 
+--- Récupère un sprite depuis une spritesheet.
+---@param sheet SpriteSheet
+---@param index integer
+---@return Sprite|nil
+function Graphics.get_sprite(sheet, index)
+    return sheet:getSprite(index)
+end
+
+--------------------- ANNIMATION ---------------------------
+
+--- Crée une animation à partir d'une spritesheet.
+---@param spriteSheet SpriteSheet
+---@param frames integer|integer[]
+---@param lastFrameOrFps number
+---@param fpsOrMode number|"loop"|"once"|nil
+---@param mode nil|"loop"|"once"
+---@return Animation
+function Graphics.animation(spriteSheet, frames, lastFrameOrFps, fpsOrMode, mode)
+    local anim = Animation.new(
+        spriteSheet,
+        frames,
+        lastFrameOrFps,
+        fpsOrMode,
+        mode
+    )
+
+    Graphics.animationManager:add(anim)
+
+    return anim
+end
+
+--- Met une animation en pause.
+---@param anim Animation
+function Graphics.stop_anim(anim)
+    anim:stop()
+end
+
+--- Réinitialise une animation.
+---@param anim Animation
+function Graphics.reset_anim(anim)
+    anim:reset()
+end
+
+---Modifie la vitesse d'une animation
+---@param anim Animation
+---@param fps integer
+function Graphics.set_anim_speed(anim, fps)
+    anim:setSpeed(fps)
+end
+
+--- Démarre ou reprend une animation.
+---@param anim Animation
+function Graphics.play_anim(anim)
+    anim:play()
+end
+
 ---------------------  DIVERS ------------------------------
 
 function Graphics.palette(index, r, g, b)
@@ -75,18 +142,33 @@ function Graphics.color(color)
     Graphics.video:setColor(color)
 end
 
+--- Retourne la largeur de l'écran.
+---@return integer
+function Graphics.screen_width()
+    return Graphics.video.WIDTH
+end
+
+--- Retourne la hauteur de l'écran.
+---@return integer
+function Graphics.screen_height()
+    return Graphics.video.HEIGHT
+end
+
 -----------------------  FORMES BASIQUES  ----------------------
 
 function Graphics.pixel(x, y, color)
     local currentColor = Graphics.video:getColor()
+    x = math.floor(x)
+    y = math.floor(y)
     color = color or currentColor
     Graphics.video:setPixel(x, y, color)
     -- Graphics.video:setColor(currentColor)
 end
 
 function Graphics.print(text, x, y, color)
-    x = x or 0
-    y = y or 0
+    x = math.floor(x) or 0
+    y = math.floor(y) or 0
+
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
     Graphics.video:drawText(x, y, text, color)
@@ -95,12 +177,17 @@ end
 function Graphics.line(x1, y1, x2, y2, color)
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
-
+    x1 = math.floor(x1)
+    y1 = math.floor(y1)
+    x2 = math.floor(x2)
+    y2 = math.floor(y2)
     Graphics.video:drawLine(x1, y1, x2, y2, color)
 end
 
 function Graphics.rect(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
+    x = math.floor(x)
+    y = math.floor(y)
     color = color or currentColor
     Graphics.video:drawRect(x, y, width, height, color)
 end
@@ -108,45 +195,70 @@ end
 function Graphics.rect_fill(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
-
+    x = math.floor(x)
+    y = math.floor(y)
     Graphics.video:fillRect(x, y, width, height, color)
 end
 
 function Graphics.circle(cx, cy, radius, color)
     local currentColor = Graphics.video:getColor()
     color = color or currentColor
+    cx = math.floor(cx)
+    cy = math.floor(cy)
+    radius = math.floor(radius)
     Graphics.video:drawCircle(cx, cy, radius, color)
 end
 
 function Graphics.circle_fill(cx, cy, radius, color)
     local currentColor = Graphics.video:getColor()
-    color = color or currentColor
+    color              = color or currentColor
+    cx                 = math.floor(cx)
+    cy                 = math.floor(cy)
+    radius             = math.floor(radius)
     Graphics.video:fillCircle(cx, cy, radius, color)
 end
 
 function Graphics.ellipse(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
-    color = color or currentColor
-
+    color              = color or currentColor
+    x                  = math.floor(x)
+    y                  = math.floor(y)
+    width              = math.floor(width)
+    height             = math.floor(height)
     Graphics.video:drawEllipse(x, y, width, height)
 end
 
 function Graphics.ellipse_fill(x, y, width, height, color)
     local currentColor = Graphics.video:getColor()
-    color = color or currentColor
-
+    color              = color or currentColor
+    x                  = math.floor(x)
+    y                  = math.floor(y)
+    width              = math.floor(width)
+    height             = math.floor(height)
     Graphics.video:fillEllipse(x, y, width, height)
 end
 
 function Graphics.triangle(x1, y1, x2, y2, x3, y3, color)
     local currentColor = Graphics.video:getColor()
-    color = color or currentColor
+    color              = color or currentColor
+    x1                 = math.floor(x1)
+    y1                 = math.floor(y1)
+    x2                 = math.floor(x2)
+    y2                 = math.floor(y2)
+    x3                 = math.floor(x3)
+    y3                 = math.floor(y3)
     Graphics.video:drawTriangle(x1, y1, x2, y2, x3, y3, color)
 end
 
 function Graphics.triangle_fill(x1, y1, x2, y2, x3, y3, color)
     local currentColor = Graphics.video:getColor()
-    color = color or currentColor
+    color              = color or currentColor
+    x1                 = math.floor(x1)
+    y1                 = math.floor(y1)
+    x2                 = math.floor(x2)
+    y2                 = math.floor(y2)
+    x3                 = math.floor(x3)
+    y3                 = math.floor(y3)
     Graphics.video:fillTriangle(x1, y1, x2, y2, x3, y3, color)
 end
 

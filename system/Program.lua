@@ -7,19 +7,23 @@ local InputAPI  = require("api.Input")
 local Program   = {}
 Program.__index = Program
 
-function Program.new(video)
-    local self  = setmetatable({}, Program)
+---@param video Video
+---@param animationManager AnimationManager
+function Program.new(video, animationManager)
+    local self            = setmetatable({}, Program)
 
-    self.boot   = nil
-    self.fan128 = nil
-    self.loaded = false
+    self.boot             = nil
+    self.fan128           = nil
+    self.loaded           = false
+    self.animationManager = animationManager
 
-    Graphics.init(video)
+    Graphics.init(video, animationManager)
 
     return self
 end
 
 function Program:load(path)
+    self.animationManager:clear()
     local chunk, errorMessage = love.filesystem.load(path)
 
     if not chunk then
@@ -28,43 +32,56 @@ function Program:load(path)
     end
 
     local environment = {
+
+        -- Ecran
+        f_screen_width      = Graphics.screen_width,
+        f_screen_height     = Graphics.screen_height,
+        f_cls               = Graphics.cls,
+        f_palette           = Graphics.palette,
+        f_color             = Graphics.color,
+
         -- Graphique
-        cls               = Graphics.cls,
-        palette           = Graphics.palette,
-        color             = Graphics.color,
-        pixel             = Graphics.pixel,
-        print             = Graphics.print,
-        line              = Graphics.line,
-        rect_fill         = Graphics.rect_fill,
-        rect              = Graphics.rect,
-        circle            = Graphics.circle,
-        circle_fill       = Graphics.circle_fill,
-        ellipse           = Graphics.ellipse,
-        ellipse_fill      = Graphics.ellipse_fill,
-        triangle          = Graphics.triangle,
-        triangle_fill     = Graphics.triangle_fill,
-        polygone          = Graphics.polygone,
-        polygone_fill     = Graphics.polygone_fill,
+        f_pixel             = Graphics.pixel,
+        f_print             = Graphics.print,
+        f_line              = Graphics.line,
+        f_rect_fill         = Graphics.rect_fill,
+        f_rect              = Graphics.rect,
+        f_circle            = Graphics.circle,
+        f_circle_fill       = Graphics.circle_fill,
+        f_ellipse           = Graphics.ellipse,
+        f_ellipse_fill      = Graphics.ellipse_fill,
+        f_triangle          = Graphics.triangle,
+        f_triangle_fill     = Graphics.triangle_fill,
+        f_polygone          = Graphics.polygone,
+        f_polygone_fill     = Graphics.polygone_fill,
 
         -- SPRITES
-        sprite            = Graphics.sprite,
-        spr               = Graphics.spr,
-        spritesheet       = Graphics.spritesheet,
+        f_sprite            = Graphics.sprite,
+        f_spr               = Graphics.spr,
+        f_spritesheet       = Graphics.spritesheet,
+        f_get_sprite        = Graphics.get_sprite,
+
+        -- ANIMATION
+        f_animation         = Graphics.animation,
+        f_stop_anim         = Graphics.stop_anim,
+        f_play_anim         = Graphics.play_anim,
+        f_reset_anim        = Graphics.reset_anim,
+        f_set_anim_speed    = Graphics.set_anim_speed,
 
         -- Input
-        btn               = InputAPI.btn,
-        btnp              = InputAPI.btnp,
-        btnr              = InputAPI.btnr,
+        f_btn               = InputAPI.btn,
+        f_btnp              = InputAPI.btnp,
+        f_btnr              = InputAPI.btnr,
 
         --- JOYSTICK
-        axis              = InputAPI.axis,
-        direction         = InputAPI.direction,
-        joystickCount     = InputAPI.joystickCount,
-        joystickConnected = InputAPI.joystickConnected,
+        f_axis              = InputAPI.axis,
+        f_direction         = InputAPI.direction,
+        f_joystickCount     = InputAPI.joystickCount,
+        f_joystickConnected = InputAPI.joystickConnected,
 
         -- Accès mémoire
-        peek              = MemoryAPI.peek,
-        poke              = MemoryAPI.poke,
+        f_peek              = MemoryAPI.peek,
+        f_poke              = MemoryAPI.poke,
 
     }
 
@@ -102,7 +119,7 @@ end
 
 function Program:update(dt)
     if self.loaded and self.fan128 then
-        local success, errorMessage = pcall(self.fan128)
+        local success, errorMessage = pcall(self.fan128, dt)
 
         if not success then
             self.errorMessage = errorMessage

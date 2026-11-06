@@ -497,10 +497,10 @@ function Video:drawPolygon(points, colorIndex)
         local nextPoint = points[(i % #points) + 1]
 
         self:drawLine(
-            current.x,
-            current.y,
-            nextPoint.x,
-            nextPoint.y,
+            math.floor(current.x),
+            math.floor(current.y),
+            math.floor(nextPoint.x),
+            math.floor(nextPoint.y),
             colorIndex
         )
     end

@@ -1,9 +1,18 @@
+function BOOT()
+end
+
 function FAN128()
-    cls(0)
+    f_cls(0)
 
-    print("FANTASY COMPUTER 128", 10, 10, 1)
-    print("CARTRIDGE TEST 2", 10, 40, 7)
+    -- Titre
+    f_print("FANTASY COMPUTER 128", 70, 35, 1)
 
-    circle_fill(160, 100, 30, 4)
-    
+    -- Présentation
+    f_print("8-BIT FANTASY COMPUTER", 72, 65, 7)
+
+    -- Version
+    f_print("DEMO CARTRIDGE V0.1", 95, 155, 6)
+
+    -- Signature
+    f_print("POWERED BY FAN128", 100, 180, 1)
 end

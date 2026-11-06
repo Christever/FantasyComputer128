@@ -6,7 +6,9 @@
     "diagnostics.disable": [
         "duplicate-set-field",
         "undefined-field",
-        "duplicate-doc-field"
+        "duplicate-doc-field",
+        "duplicate-doc-alias",
+        "inject-field"
     ],
     "workspace.library": [
         "${3rd}/love2d/library",

@@ -1,15 +1,16 @@
-local Memory    = require("system.memory.Memory")
-local CPU       = require("system.cpu.CPU")
-local Video     = require("system.video.Video")
-local Input     = require("system.input.Input")
-local Audio     = require("system.audio.Audio")
-local Program   = require("system.Program")
-local Startup   = require("system.Startup")
-local Cartridge = require("system.Cartridge")
-local Config    = require("system.Config")
-local Logger    = require("system.Logger")
-local InputAPI  = require("api.Input")
-local MemoryAPI = require("api.Memory")
+local Memory           = require("system.memory.Memory")
+local CPU              = require("system.cpu.CPU")
+local Video            = require("system.video.Video")
+local Input            = require("system.input.Input")
+local Audio            = require("system.audio.Audio")
+local Program          = require("system.Program")
+local Startup          = require("system.Startup")
+local Cartridge        = require("system.Cartridge")
+local Config           = require("system.Config")
+local Logger           = require("system.Logger")
+local InputAPI         = require("api.Input")
+local MemoryAPI        = require("api.Memory")
+local AnimationManager = require("system.video.AnimationManager")
 
 ---@class System
 ---@field memory Memory
@@ -20,8 +21,9 @@ local MemoryAPI = require("api.Memory")
 ---@field startup Startup|nil
 ---@field audio Audio
 ---@field cartridge Cartridge
-local System    = {}
-System.__index  = System
+---@field animationManager AnimationManager
+local System           = {}
+System.__index         = System
 
 -------------------------- LOCALES -----------------------------------
 
@@ -54,16 +56,17 @@ end
 
 ---@return System
 function System.new()
-    local self     = setmetatable({}, System)
+    local self            = setmetatable({}, System)
 
-    self.memory    = nil
-    self.cpu       = nil
-    self.video     = nil
-    self.input     = nil
-    self.program   = nil
-    self.startup   = nil
-    self.cartridge = nil
-    self.audio     = nil
+    self.memory           = nil
+    self.cpu              = nil
+    self.video            = nil
+    self.input            = nil
+    self.program          = nil
+    self.startup          = nil
+    self.cartridge        = nil
+    self.audio            = nil
+    self.animationManager = nil
 
     return self
 end
@@ -73,18 +76,20 @@ function System:init()
     self.memory = Memory.new()
     MemoryAPI.init(self.memory)
 
-    self.cpu            = CPU.new(self.memory)
-    self.video          = Video.new(self.memory)
-    self.input          = Input.new()
-    self.audio          = Audio.new()
-    self.cartridgeError = nil
+    self.cpu              = CPU.new(self.memory)
+    self.video            = Video.new(self.memory)
+    self.input            = Input.new()
+    self.audio            = Audio.new()
+    self.animationManager = AnimationManager.new()
+
+    self.cartridgeError   = nil
 
     self.video:init()
     self.input:init()
 
     InputAPI.init(self.input)
 
-    self.program            = Program.new(self.video)
+    self.program            = Program.new(self.video, self.animationManager)
     self.cartridge          = Cartridge.new(self.program)
 
     -- Gestion des raccourcis système
@@ -189,6 +194,7 @@ function System:update(dt)
             end
         end
     else
+        self.animationManager:update(dt)
         self.program:update(dt)
 
         if not self.program.loaded and self.program.errorMessage then
