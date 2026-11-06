@@ -79,7 +79,7 @@ function Graphics.get_sprite(sheet, index)
     return sheet:getSprite(index)
 end
 
---------------------- ANNIMATION ---------------------------
+--------------------- ANIMATION ---------------------------
 
 --- Crée une animation à partir d'une spritesheet.
 ---@param spriteSheet SpriteSheet

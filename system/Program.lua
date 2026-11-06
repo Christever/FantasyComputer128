@@ -10,11 +10,11 @@ Program.__index = Program
 ---@param video Video
 ---@param animationManager AnimationManager
 function Program.new(video, animationManager)
-    local self            = setmetatable({}, Program)
+    local self = setmetatable({}, Program)
 
-    self.boot             = nil
-    self.fan128           = nil
-    self.loaded           = false
+    self.boot = nil
+    self.fan128 = nil
+    self.loaded = false
     self.animationManager = animationManager
 
     Graphics.init(video, animationManager)
@@ -24,6 +24,7 @@ end
 
 function Program:load(path)
     self.animationManager:clear()
+
     local chunk, errorMessage = love.filesystem.load(path)
 
     if not chunk then
@@ -31,6 +32,7 @@ function Program:load(path)
         return false
     end
 
+    -- Environnement de la cartouche
     local environment = {
 
         -- Ecran
@@ -55,13 +57,13 @@ function Program:load(path)
         f_polygone          = Graphics.polygone,
         f_polygone_fill     = Graphics.polygone_fill,
 
-        -- SPRITES
+        -- Sprites
         f_sprite            = Graphics.sprite,
         f_spr               = Graphics.spr,
         f_spritesheet       = Graphics.spritesheet,
         f_get_sprite        = Graphics.get_sprite,
 
-        -- ANIMATION
+        -- Animation
         f_animation         = Graphics.animation,
         f_stop_anim         = Graphics.stop_anim,
         f_play_anim         = Graphics.play_anim,
@@ -73,7 +75,7 @@ function Program:load(path)
         f_btnp              = InputAPI.btnp,
         f_btnr              = InputAPI.btnr,
 
-        --- JOYSTICK
+        -- Joystick
         f_axis              = InputAPI.axis,
         f_direction         = InputAPI.direction,
         f_joystickCount     = InputAPI.joystickCount,
@@ -82,21 +84,67 @@ function Program:load(path)
         -- Accès mémoire
         f_peek              = MemoryAPI.peek,
         f_poke              = MemoryAPI.poke,
-
     }
 
+    -- Référence vers le require standard
+    local standardRequire = require
+
+    -- Cache des modules de la cartouche
+    local cartridgeModules = {}
+
+    -- Chargement personnalisé des modules
+    environment.require = function(moduleName)
+        -- Les modules système utilisent le require standard
+        if moduleName:sub(1, 11) ~= "cartridges." then
+            return standardRequire(moduleName)
+        end
+
+        -- Module déjà chargé
+        if cartridgeModules[moduleName] ~= nil then
+            return cartridgeModules[moduleName]
+        end
+
+        -- Conversion du nom en chemin
+        local modulePath = moduleName:gsub("%.", "/") .. ".lua"
+
+        local moduleChunk, moduleError = love.filesystem.load(modulePath)
+
+        if not moduleChunk then
+            error(moduleError, 2)
+        end
+
+        -- Le module partage l'environnement de la cartouche
+        setfenv(moduleChunk, environment)
+
+        -- Exécution du module
+        local result = moduleChunk()
+
+        if result == nil then
+            result = true
+        end
+
+        -- Mise en cache
+        cartridgeModules[moduleName] = result
+
+        return result
+    end
+
+    -- Accès aux fonctions globales standard
     setmetatable(environment, {
         __index = _G
     })
 
+    -- Affectation de l'environnement à la cartouche
     setfenv(chunk, environment)
 
+    -- Exécution de la cartouche
     local success, result = pcall(chunk)
 
     if not success then
         print("Erreur d'execution :", result)
         return false
     end
+
     -- Initialisation de la cartouche
     if environment.BOOT then
         local bootSuccess, bootError = pcall(environment.BOOT)
@@ -104,9 +152,11 @@ function Program:load(path)
         if not bootSuccess then
             print("CARTRIDGE BOOT ERROR :", bootError)
             Logger.error("CARTRIDGE BOOT ERROR : " .. tostring(bootError))
+
             self.fan128 = nil
             self.loaded = false
             self.errorMessage = bootError
+
             return false
         end
     end
