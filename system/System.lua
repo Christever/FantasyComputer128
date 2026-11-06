@@ -203,7 +203,7 @@ function System:draw()
         self.video:clear(0)
         self.video:drawText(80, 60, "FANTASY COMPUTER 128", 1)
         self.video:drawText(100, 90, "CARTRIDGE ERROR", 2)
-        self.video:drawText(58, 120, "BOOT INITIALIZATION FAILED", 1)
+        self.video:drawText(95, 110, "CARTRIDGE FAILED", 1)
         local errorLines = wrapText(tostring(self.cartridgeError), 30)
 
         for i, line in ipairs(errorLines) do
