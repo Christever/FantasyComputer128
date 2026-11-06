@@ -172,7 +172,6 @@ end
 --- Met à jour la console.
 ---@param dt number Temps écoulé depuis la dernière frame.
 function System:update(dt)
-    self.input:update()
     self.audio:update(dt)
 
     if self.startup and not self.startup.finished then
@@ -194,6 +193,7 @@ function System:update(dt)
         end
     end
 
+    self.input:update()
     self.video:updateScreen()
 end
 
