@@ -81,7 +81,15 @@ end
 
 function Program:update(dt)
     if self.loaded and self.fan128 then
-        self.fan128()
+        local success, errorMessage = pcall(self.fan128)
+
+        if not success then
+            self.errorMessage = errorMessage
+            self.fan128 = nil
+            self.loaded = false
+
+            print("Erreur FAN128 :", errorMessage)
+        end
     end
 end
 

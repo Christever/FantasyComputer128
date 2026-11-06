@@ -188,6 +188,10 @@ function System:update(dt)
         end
     else
         self.program:update(dt)
+
+        if not self.program.loaded and self.program.errorMessage then
+            self.cartridgeError = self.program.errorMessage
+        end
     end
 
     self.video:updateScreen()
