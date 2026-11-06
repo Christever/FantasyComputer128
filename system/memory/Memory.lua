@@ -185,6 +185,7 @@ function Memory:read(address)
     else
         Logger.raise("Région mémoire inconnue")
     end
+    return 0
 end
 
 -- Écriture via l'espace d'adressage du CPU

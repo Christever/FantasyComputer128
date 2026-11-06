@@ -3,7 +3,7 @@ local bit = require("bit")
 ---@class Audio
 local Audio = {}
 
----@enum VolumeRange
+-- -@enum VolumeRange
 local Volume = {
     Min = 0,
     Low = 25,

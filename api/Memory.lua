@@ -2,7 +2,7 @@ local Logger = require("system.Logger")
 ---@class MemoryAPI
 local MemoryAPI = {}
 
-local memory = nil
+local memory
 
 --- Initialise l'API mémoire.
 ---@param memoryInstance Memory

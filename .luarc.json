@@ -5,7 +5,8 @@
     ],
     "diagnostics.disable": [
         "duplicate-set-field",
-        "undefined-field"
+        "undefined-field",
+        "duplicate-doc-field"
     ],
     "workspace.library": [
         "${3rd}/love2d/library",
