@@ -1,5 +1,16 @@
 ---@meta
 
+---@alias Button
+---| "UP"
+---| "DOWN"
+---| "LEFT"
+---| "RIGHT"
+---| "A"
+---| "B"
+---| "START"
+---| "SELECT"
+---| "EXIT"
+
 ------------------ ECRAN ------------------
 
 --- Retourne la largeur de l'écran.

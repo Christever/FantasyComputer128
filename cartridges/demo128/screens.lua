@@ -67,8 +67,8 @@ function Screens.drawMenuScreen(selection)
         local y = startY + (i - 1) * spacing
 
         if i == selection then
-            f_print(">", 95, y, 6)
-            f_print(item, 110, y, 6)
+            f_print(">", 95, y, 5)
+            f_print(item, 110, y, 5)
         else
             f_print(item, 110, y, 7)
         end
