@@ -48,7 +48,7 @@ end
 
 local function joystickremoved(self, joystick)
     for i, current in ipairs(self.joysticks) do
-        if current == joystick then
+        if current.joystick == joystick then
             table.remove(self.joysticks, i)
             break
         end

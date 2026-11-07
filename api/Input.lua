@@ -103,7 +103,24 @@ function InputAPI.joystickCount()
         return 0
     end
 
-    return input:getJoystickCount()
+    return #input.joysticks
+end
+
+--- Retourne le nom d'une manette connectée.
+---@param joystickIndex integer
+---@return string
+function InputAPI.joystickName(joystickIndex)
+    if not input then
+        return ""
+    end
+
+    local joystickData = input.joysticks[joystickIndex]
+
+    if not joystickData then
+        return ""
+    end
+
+    return joystickData.joystick:getName()
 end
 
 --- Vérifie si une manette est connectée à un index donné.

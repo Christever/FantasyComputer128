@@ -95,6 +95,7 @@ function Program:load(path)
         f_direction         = InputAPI.direction,
         f_joystickCount     = InputAPI.joystickCount,
         f_joystickConnected = InputAPI.joystickConnected,
+        f_joystickName      = InputAPI.joystickName,
 
         -- Accès mémoire
         f_peek              = MemoryAPI.peek,

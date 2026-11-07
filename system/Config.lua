@@ -18,4 +18,6 @@ Config.PLATFORM = "desktop"
 -- Mode debug
 Config.DEBUG_MODE = false
 
+Config.LOADING_DURATION = 1
+
 return Config

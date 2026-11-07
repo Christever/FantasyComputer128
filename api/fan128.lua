@@ -247,6 +247,11 @@ function f_direction(joystickIndex, axis) end
 ---@return integer
 function f_joystickCount() end
 
+--- Retourne le nom d'une manette connectée.
+---@param joystickIndex integer
+---@return string
+function f_joystickName(joystickIndex) end
+
 --- Vérifie si une manette est connectée.
 ---@param joystickIndex integer
 ---@return boolean

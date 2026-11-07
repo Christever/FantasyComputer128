@@ -12,6 +12,9 @@ local InputAPI         = require("api.Input")
 local MemoryAPI        = require("api.Memory")
 local AnimationManager = require("system.video.AnimationManager")
 
+local SpriteSheet      = require("system.video.SpriteSheet")
+local Animation        = require("system.video.Animation")
+
 ---@class System
 ---@field memory Memory
 ---@field cpu CPU
@@ -70,8 +73,6 @@ function System.new()
     self.animationManager     = nil
     self.cartridgeLoader      = nil
 
-
-
     return self
 end
 
@@ -86,7 +87,7 @@ function System:init()
     self.audio            = Audio.new()
     self.animationManager = AnimationManager.new()
 
-    self.cartridgeError   = nil
+    self.cartridgeError = nil
 
     self.video:init()
     self.input:init()
@@ -190,6 +191,10 @@ end
 ---@param dt number Temps écoulé depuis la dernière frame.
 function System:update(dt)
     self.audio:update(dt)
+
+    if self.loadingAnimation then
+        self.loadingAnimation:update(dt)
+    end
 
     if self.startup and not self.startup.finished then
         self.startup:update(dt)

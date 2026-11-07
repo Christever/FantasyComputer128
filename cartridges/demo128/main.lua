@@ -4,6 +4,7 @@ local Menu          = require("cartridges.demo128.menu")
 local GraphicsDemo  = require("cartridges.demo128.demos.GraphicsDemo")
 local PaletteDemo   = require("cartridges.demo128.demos.PaletteDemo")
 local SpritesDemo   = require("cartridges.demo128.demos.SpritesDemo")
+local ControlsDemo  = require("cartridges.demo128.demos.ControlsDemo")
 
 local SCREEN_WIDTH  = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
@@ -17,7 +18,8 @@ local selectedItem  = nil
 
 
 function BOOT()
-    SpritesDemo.createPlayer()
+    SpritesDemo.create()
+    
 end
 
 function FAN128(dt)
@@ -41,12 +43,13 @@ function FAN128(dt)
             currentScreen = "demo"
         end
     elseif currentScreen == "demo" then
-        if selectedItem == "GRAPHICS" then
+        if selectedItem == "CONTROLS" then
+            ControlsDemo.draw()
+        elseif selectedItem == "GRAPHICS" then
             GraphicsDemo.draw()
         elseif selectedItem == "PALETTE" then
             PaletteDemo.draw()
         elseif selectedItem == "SPRITES" then
-            SpritesDemo.update(dt)
             SpritesDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)

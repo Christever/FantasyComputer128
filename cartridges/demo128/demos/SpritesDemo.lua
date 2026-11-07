@@ -1,85 +1,16 @@
-local animationTimer = 0
-local currentFrame = 1
 local SpritesDemo = {}
-local playerFrames = {}
-local frameDuration = 0.25
+local PlayerSprite = require("cartridges.demo128.demos.sprites.PlayerSprite")
+local ChestSprite = require("cartridges.demo128.demos.sprites.ChestSprite")
+local SlimeSprite = require("cartridges.demo128.demos.sprites.SlimeSprite")
+local TreeSprite = require("cartridges.demo128.demos.sprites.TreeSprite")
 
-local function createPlayerSprite()
-    local sprite = f_sprite(16, 16, -1)
+local player, chest, slime, tree
 
-    -- Chapeau
-    for x = 5, 12 do
-        f_spr_pixel(sprite, x, 2, 4)
-    end
-
-    -- Tete
-    for y = 3, 8 do
-        for x = 4, 13 do
-            f_spr_pixel(sprite, x, y, 7)
-        end
-    end
-
-    -- Yeux
-    f_spr_pixel(sprite, 6, 5, 0)
-    f_spr_pixel(sprite, 11, 5, 0)
-
-    -- Corps
-    for y = 9, 13 do
-        for x = 5, 12 do
-            f_spr_pixel(sprite, x, y, 3)
-        end
-    end
-
-    return sprite
-end
-
-function SpritesDemo.createPlayer()
-    -- Image 1 : jambes normales
-    playerFrames[1] = createPlayerSprite()
-
-    for x = 5, 7 do
-        f_spr_pixel(playerFrames[1], x, 14, 4)
-    end
-
-    for x = 10, 12 do
-        f_spr_pixel(playerFrames[1], x, 14, 4)
-    end
-
-    -- Image 2 : jambe gauche avance
-    playerFrames[2] = createPlayerSprite()
-
-    for x = 5, 7 do
-        f_spr_pixel(playerFrames[2], x, 14, 4)
-    end
-
-    for x = 10, 12 do
-        f_spr_pixel(playerFrames[2], x, 15, 4)
-    end
-
-    -- Image 3 : jambe droite avance
-    playerFrames[3] = createPlayerSprite()
-
-    for x = 5, 7 do
-        f_spr_pixel(playerFrames[3], x, 15, 4)
-    end
-
-    for x = 10, 12 do
-        f_spr_pixel(playerFrames[3], x, 14, 4)
-    end
-end
-
-function SpritesDemo.update(dt)
-    animationTimer = animationTimer + dt
-
-    if animationTimer >= frameDuration then
-        animationTimer = animationTimer - frameDuration
-
-        currentFrame = currentFrame + 1
-
-        if currentFrame > #playerFrames then
-            currentFrame = 1
-        end
-    end
+function SpritesDemo.create()
+    player = PlayerSprite.create()
+    chest = ChestSprite.create()
+    slime = SlimeSprite.create()
+    tree = TreeSprite.create()
 end
 
 function SpritesDemo.draw()
@@ -93,17 +24,32 @@ function SpritesDemo.draw()
 
     -- Zone gauche : creation directe
     f_print("SPRITE CREATION", 16, 34, 4)
-    f_print("Internal\ninstructions", 16, 46, 7)
 
-    local player = playerFrames[currentFrame]
-
+    -- Premiere rangee
     if player then
-        f_spr(player, 56, 72)
+        f_spr(player, 40, 60)
+        f_print("PLAYER", 32, 82, 7)
     end
 
-    f_print("f_sprite()", 16, 130, 7)
-    f_print("f_spr_pixel()", 16, 142, 7)
-    f_print("f_spr()", 16, 154, 7)
+    if chest then
+        f_spr(chest, 112, 60)
+        f_print("CHEST", 104, 82, 7)
+    end
+
+    -- Deuxieme rangee
+    if slime then
+        f_spr(slime, 40, 100)
+        f_print("SLIME", 32, 122, 7)
+    end
+
+    if tree then
+        f_spr(tree, 112, 100)
+        f_print("TREE", 108, 122, 7)
+    end
+
+    -- Instructions
+    f_print("f_sprite()", 16, 142, 3)
+    f_print("f_spr_pixel()", 16, 154, 3)
 
     -- Separateur vertical
     f_line(160, 30, 160, 175, 5)
@@ -111,7 +57,6 @@ function SpritesDemo.draw()
     -- Zone droite : spritesheet
     f_print("SPRITESHEET", 180, 34, 3)
     f_print("Image loading", 180, 46, 7)
-
     f_print("Coming soon...", 180, 90, 6)
 
     -- Bas de l'ecran
