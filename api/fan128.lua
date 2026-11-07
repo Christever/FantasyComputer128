@@ -143,6 +143,18 @@ function f_polygone_fill(points, color) end
 ---@return Sprite
 function f_sprite(width, height, colorIndex) end
 
+--- Modifie la couleur d'un pixel du sprite.
+---@param sprite Sprite
+---@param x integer Coordonnée X (base 1).
+---@param y integer Coordonnée Y (base 1).
+---@param color integer Couleur (0-255) ou -1 pour transparent.
+function f_spr_pixel(sprite, x, y, color) end
+
+--- Définit la couleur transparente du sprite.
+---@param sprite Sprite
+---@param color integer Couleur (0-255) ou -1 pour aucune transparence.
+function f_spr_transparent(sprite, color) end
+
 --- Affiche un sprite ou un sprite provenant d'une spritesheet.
 ---@param sprite Sprite|SpriteSheet|Animation
 ---@param x number Position horizontale.

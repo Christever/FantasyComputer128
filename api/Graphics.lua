@@ -26,6 +26,16 @@ function Graphics.sprite(width, height, colorIndex)
     return Sprite.new(width, height, colorIndex)
 end
 
+-- Modifie un pixel du sprite.
+function Graphics.spr_pixel(sprite, x, y, color)
+    sprite:setPixel(x, y, color)
+end
+
+-- Définit la couleur transparente du sprite.
+function Graphics.spr_transparent(sprite, color)
+    sprite:setTransparentColor(color)
+end
+
 --- Affiche un sprite à l'écran.
 ---@param sprite Sprite|SpriteSheet Sprite ou feuille de sprites.
 ---@param x number Position horizontale.

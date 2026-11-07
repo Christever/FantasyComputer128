@@ -73,6 +73,8 @@ function Program:load(path)
         -- Sprites
         f_sprite            = Graphics.sprite,
         f_spr               = Graphics.spr,
+        f_spr_pixel         = Graphics.spr_pixel,
+        f_spr_transparent   = Graphics.spr_transparent,
         f_spritesheet       = Graphics.spritesheet,
         f_get_sprite        = Graphics.get_sprite,
 
