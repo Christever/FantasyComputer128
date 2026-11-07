@@ -9,4 +9,14 @@ Config.ANIMATION_POINT_COUNT = 5
 Config.ANIMATION_SPACING = 16
 Config.ANIMATION_WIDTH = Config.ANIMATION_END_X - Config.ANIMATION_START_X
 
+Config.MENU_ITEMS = {
+    "GRAPHICS",
+    "PALETTE",
+    "SPRITES",
+    "ANIMATIONS",
+    "INPUT",
+    "MEMORY",
+    "AUDIO"
+}
+
 return Config

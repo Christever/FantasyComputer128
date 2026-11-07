@@ -1,5 +1,6 @@
 local Screens       = require("cartridges.screens")
 local Config        = require("cartridges.config")
+local Menu          = require("cartridges.menu")
 
 local SCREEN_WIDTH  = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
@@ -7,8 +8,9 @@ local CENTER_X      = SCREEN_WIDTH / 2
 local CENTER_Y      = SCREEN_HEIGHT / 2
 
 local elapsed       = 0
-local position, logoAnimation
+local logoAnimation
 local currentScreen = "title"
+
 
 function BOOT()
     logoAnimation = f_animation(
@@ -32,6 +34,7 @@ function FAN128(dt)
     if currentScreen == "title" then
         Screens.drawTitleScreen(logoAnimation, elapsed)
     elseif currentScreen == "menu" then
-        Screens.drawMenuScreen()
+        Menu.update()
+        Screens.drawMenuScreen(Menu.selection)
     end
 end

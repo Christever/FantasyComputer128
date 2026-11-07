@@ -47,9 +47,11 @@ function Screens.drawTitleScreen(logoAnimation, elapsed)
     end
 end
 
-function Screens.drawMenuScreen()
+function Screens.drawMenuScreen(selection)
     f_cls(0)
-    f_print("MENU PRINCIPAL", 110, 100, 7)
+
+    f_print("MENU PRINCIPAL", 110, 70, 7)
+    f_print("SELECTION : " .. selection, 110, 100, 7)
 end
 
 return Screens

@@ -25,7 +25,13 @@ local function joystickadded(self, joystick)
     end
 
     table.insert(self.joysticks, joystick)
-    print("Manette connectée :", joystick:getName())
+
+    print("--------------------------------")
+    print("MANETTE CONNECTEE")
+    print("Nom  :", joystick:getName())
+    print("ID   :", joystick:getID())
+    print("GUID :", joystick:getGUID())
+    print("--------------------------------")
 end
 
 local function joystickremoved(self, joystick)
@@ -40,6 +46,7 @@ local function joystickremoved(self, joystick)
 end
 
 local function joystickpressed(self, joystick, button)
+    print("BOUTON MANETTE :", button)
     local id = joystick:getID()
 
     if not self.pressedJoystickButtons[id] then
@@ -50,6 +57,7 @@ local function joystickpressed(self, joystick, button)
 end
 
 local function joystickreleased(self, joystick, button)
+    print("BOUTON RELACHE :", button)
     local id = joystick:getID()
 
     if not self.releasedJoystickButtons[id] then
