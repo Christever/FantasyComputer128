@@ -27,7 +27,14 @@ function Graphics.sprite(width, height, colorIndex)
 end
 
 -- Modifie un pixel du sprite.
+-- function Graphics.spr_pixel(sprite, x, y, color)
+--     sprite:setPixel(x, y, color)
+-- end
 function Graphics.spr_pixel(sprite, x, y, color)
+    if not sprite then
+        return
+    end
+
     sprite:setPixel(x, y, color)
 end
 
@@ -52,7 +59,7 @@ function Graphics.spr(sprite, x, y, flipX, flipY, index)
     if index ~= nil then
         ---@cast sprite SpriteSheet
         selectedSprite = sprite:getSprite(index)
-    elseif sprite.getSprite then
+    elseif sprite and sprite.getSprite then
         ---@cast sprite Animation
         selectedSprite = sprite:getSprite()
     else

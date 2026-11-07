@@ -3,6 +3,7 @@ local Config        = require("cartridges.demo128.config")
 local Menu          = require("cartridges.demo128.menu")
 local GraphicsDemo  = require("cartridges.demo128.demos.GraphicsDemo")
 local PaletteDemo   = require("cartridges.demo128.demos.PaletteDemo")
+local SpritesDemo   = require("cartridges.demo128.demos.SpritesDemo")
 
 local SCREEN_WIDTH  = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
@@ -16,12 +17,7 @@ local selectedItem  = nil
 
 
 function BOOT()
-    logoAnimation = f_animation(
-        f_spritesheet("assets/sprites/test.png", 16, 16),
-        { 1, 2 },
-        2,
-        "loop"
-    )
+    SpritesDemo.createPlayer()
 end
 
 function FAN128(dt)
@@ -49,6 +45,8 @@ function FAN128(dt)
             GraphicsDemo.draw()
         elseif selectedItem == "PALETTE" then
             PaletteDemo.draw()
+        elseif selectedItem == "SPRITES" then
+            SpritesDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)
         end
