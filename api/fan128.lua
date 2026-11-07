@@ -239,3 +239,13 @@ function f_peek(address) end
 ---@param address integer Adresse CPU (0 à 65535)
 ---@param value integer Valeur (0 à 255)
 function f_poke(address, value) end
+
+------------------------CARTOUCHE ----------------------
+
+---  Chargement d'une cartouche
+---@param path string  Chemin de la cartouche
+function f_load_cartridge(path) end
+
+--- Retourne la liste des cartouches disponibles.*
+---@return table
+function f_get_cartridges() end

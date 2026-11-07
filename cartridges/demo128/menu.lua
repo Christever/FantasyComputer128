@@ -1,4 +1,4 @@
-local Config   = require("cartridges.config")
+local Config   = require("cartridges.demo128.config")
 local Menu     = {}
 
 Menu.selection = 1
@@ -19,6 +19,10 @@ function Menu.update()
     if Menu.selection > #Config.MENU_ITEMS then
         Menu.selection = 1
     end
+end
+
+function Menu.getSelectedItem()
+    return Config.MENU_ITEMS[Menu.selection]
 end
 
 return Menu

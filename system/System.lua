@@ -56,17 +56,21 @@ end
 
 ---@return System
 function System.new()
-    local self            = setmetatable({}, System)
+    local self                = setmetatable({}, System)
 
-    self.memory           = nil
-    self.cpu              = nil
-    self.video            = nil
-    self.input            = nil
-    self.program          = nil
-    self.startup          = nil
-    self.cartridge        = nil
-    self.audio            = nil
-    self.animationManager = nil
+    self.memory               = nil
+    self.cpu                  = nil
+    self.video                = nil
+    self.input                = nil
+    self.program              = nil
+    self.startup              = nil
+    self.cartridge            = nil
+    self.pendingCartridgePath = nil
+    self.audio                = nil
+    self.animationManager     = nil
+    self.cartridgeLoader      = nil
+
+
 
     return self
 end
@@ -89,8 +93,13 @@ function System:init()
 
     InputAPI.init(self.input)
 
-    self.program            = Program.new(self.video, self.animationManager)
-    self.cartridge          = Cartridge.new(self.program)
+    self.program   = Program.new(self.video, self.animationManager)
+    self.cartridge = Cartridge.new(self.program)
+    self.program:setCartridgeManager(self.cartridge)
+
+    self.program:setCartridgeLoader(function(path)
+        self.pendingCartridgePath = path
+    end)
 
     -- Gestion des raccourcis système
     self.input.onKeyPressed = function(key)
@@ -196,6 +205,20 @@ function System:update(dt)
     else
         self.animationManager:update(dt)
         self.program:update(dt)
+
+        -- Changement de cartouche demande
+        if self.pendingCartridgePath then
+            local path = self.pendingCartridgePath
+            self.pendingCartridgePath = nil
+
+            local success = self.cartridge:load(path)
+
+            if success then
+                self.cartridgeError = nil
+            else
+                self.cartridgeError = self.program.errorMessage
+            end
+        end
 
         if not self.program.loaded and self.program.errorMessage then
             self.cartridgeError = self.program.errorMessage

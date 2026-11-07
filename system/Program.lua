@@ -10,16 +10,29 @@ Program.__index = Program
 ---@param video Video
 ---@param animationManager AnimationManager
 function Program.new(video, animationManager)
-    local self = setmetatable({}, Program)
+    local self            = setmetatable({}, Program)
 
-    self.boot = nil
-    self.fan128 = nil
-    self.loaded = false
+    self.boot             = nil
+    self.fan128           = nil
+    self.loaded           = false
     self.animationManager = animationManager
+    self.cartridgeManager = nil
 
     Graphics.init(video, animationManager)
 
     return self
+end
+
+--- Définit le gestionnaire de cartouches.
+---@param manager table
+function Program:setCartridgeManager(manager)
+    self.cartridgeManager = manager
+end
+
+--- Définit la fonction de chargement des cartouches.
+---@param callback function
+function Program:setCartridgeLoader(callback)
+    self.cartridgeLoader = callback
 end
 
 function Program:load(path)
@@ -84,6 +97,25 @@ function Program:load(path)
         -- Accès mémoire
         f_peek              = MemoryAPI.peek,
         f_poke              = MemoryAPI.poke,
+
+        ----------------- CARTOUCHE ----------------------
+
+        -- Chargement d'une cartouche
+        f_load_cartridge    = function(path)
+            if self.cartridgeLoader then
+                self.cartridgeLoader(path)
+            end
+        end,
+
+        -- Liste des cartouches disponibles
+        -- Liste des cartouches disponibles
+        f_get_cartridges    = function()
+            if self.cartridgeManager then
+                return self.cartridgeManager:getAvailable()
+            end
+
+            return {}
+        end,
     }
 
     -- Référence vers le require standard

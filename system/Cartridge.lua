@@ -58,4 +58,35 @@ function Cartridge:reload()
     return self:load(path)
 end
 
+--- Recherche les cartouches disponibles.
+---@return table
+function Cartridge:getAvailable()
+    local cartridges = {}
+
+    local directories = love.filesystem.getDirectoryItems("cartridges")
+
+    for _, directory in ipairs(directories) do
+        local path = "cartridges/" .. directory
+        local info = love.filesystem.getInfo(path)
+
+        if info and info.type == "directory" then
+            local mainPath = path .. "/main.lua"
+            local mainInfo = love.filesystem.getInfo(mainPath)
+
+            if mainInfo and mainInfo.type == "file" then
+                table.insert(cartridges, {
+                    name = directory:upper(),
+                    path = mainPath
+                })
+            end
+        end
+    end
+
+    table.sort(cartridges, function(a, b)
+        return a.name < b.name
+    end)
+
+    return cartridges
+end
+
 return Cartridge

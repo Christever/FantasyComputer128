@@ -1,4 +1,4 @@
-local Config  = require("cartridges.config")
+local Config  = require("cartridges.demo128.config")
 local Screens = {}
 
 function Screens.drawTitleScreen(logoAnimation, elapsed)
@@ -50,8 +50,33 @@ end
 function Screens.drawMenuScreen(selection)
     f_cls(0)
 
-    f_print("MENU PRINCIPAL", 110, 70, 7)
-    f_print("SELECTION : " .. selection, 110, 100, 7)
+    local centerX = Config.SCREEN_WIDTH / 2
+
+    -- Cadre exterieur
+    f_rect(4, 4, Config.SCREEN_WIDTH - 8, Config.SCREEN_HEIGHT - 8, 1)
+
+    -- Titre
+    f_print("MENU PRINCIPAL", centerX - 45, 25, 7)
+    f_line(30, 42, Config.SCREEN_WIDTH - 30, 42, 6)
+
+    -- Rubriques du menu
+    local startY = 60
+    local spacing = 16
+
+    for i, item in ipairs(Config.MENU_ITEMS) do
+        local y = startY + (i - 1) * spacing
+
+        if i == selection then
+            f_print(">", 95, y, 6)
+            f_print(item, 110, y, 6)
+        else
+            f_print(item, 110, y, 7)
+        end
+    end
+
+    -- Indication en bas de l'ecran
+    f_print("UP / DOWN : SELECT", 75, 175, 1)
+    f_print("START : CONFIRM", 90, 185, 1)
 end
 
 return Screens
