@@ -11,9 +11,9 @@ function GraphicsDemo.draw()
     f_print("PIXELS", 20, 35, 6)
 
     f_pixel(30, 55, 7)
-    f_pixel(35, 55, 7)
-    f_pixel(40, 55, 7)
-    f_pixel(45, 55, 7)
+    f_pixel(35, 55, 8)
+    f_pixel(40, 55, 9)
+    f_pixel(45, 55, 10)
 
     -- Lignes
     f_print("LINES", 100, 35, 6)
