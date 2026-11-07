@@ -1,7 +1,10 @@
-local Logger = require("system.Logger")
+local Logger        = require("system.Logger")
+local GamepadConfig = require("system.input.GamepadConfig")
+print("PROFILS MANETTES :", GamepadConfig.PROFILES ~= nil)
+
 ---@class Input
 ---@field onKeyPressed fun(key: string)|nil
-local Input = {}
+local Input   = {}
 Input.__index = Input
 -------------------------  LOCALES -----------------
 
@@ -14,24 +17,32 @@ local function keyreleased(self, key)
     self.releasedKeys[key] = true
 end
 
-local function joystickadded(self, joystick)
+local function registerJoystick(self, joystick)
     local id = joystick:getID()
 
     for _, current in ipairs(self.joysticks) do
-        if current:getID() == id then
-            print("Manette déjà connectée :", joystick:getName())
+        if current.joystick:getID() == id then
             return
         end
     end
 
-    table.insert(self.joysticks, joystick)
+    local guid = joystick:getGUID()
+    local profile = GamepadConfig.PROFILES[guid]
 
-    print("--------------------------------")
-    print("MANETTE CONNECTEE")
-    print("Nom  :", joystick:getName())
-    print("ID   :", joystick:getID())
-    print("GUID :", joystick:getGUID())
-    print("--------------------------------")
+    table.insert(self.joysticks, {
+        joystick = joystick,
+        profile = profile
+    })
+
+    if profile then
+        print("Profil reconnu :", profile.name)
+    else
+        print("Profil inconnu :", joystick:getName())
+    end
+end
+
+local function joystickadded(self, joystick)
+    registerJoystick(self, joystick)
 end
 
 local function joystickremoved(self, joystick)
@@ -57,7 +68,6 @@ local function joystickpressed(self, joystick, button)
 end
 
 local function joystickreleased(self, joystick, button)
-    print("BOUTON RELACHE :", button)
     local id = joystick:getID()
 
     if not self.releasedJoystickButtons[id] then
@@ -136,9 +146,15 @@ end
 
 --- Initialise les manettes connectées
 function Input:init()
-    self.joysticks = love.joystick.getJoysticks()
+    self.joysticks = {}
     self.pressedJoystickButtons = {}
     self.releasedJoystickButtons = {}
+
+    local joysticks = love.joystick.getJoysticks()
+
+    for _, joystick in ipairs(joysticks) do
+        registerJoystick(self, joystick)
+    end
 
     print("Manettes détectées :", #self.joysticks)
 end
@@ -222,7 +238,29 @@ end
 ---@param index integer
 ---@return any|nil
 function Input:getJoystick(index)
-    return self.joysticks[index]
+    local entry = self.joysticks[index]
+
+    if not entry then
+        return nil
+    end
+
+    return entry.joystick
+end
+
+local function getPhysicalButton(self, joystickIndex, button)
+    local entry = self.joysticks[joystickIndex]
+
+    if not entry then
+        return nil
+    end
+
+    -- Profil personnalisé de la manette
+    if entry.profile and entry.profile.buttons[button] then
+        return entry.profile.buttons[button]
+    end
+
+    -- Correspondance standard
+    return self.GAMEPAD_BUTTONS[button]
 end
 
 --- Vérifie si un bouton de manette est maintenu
@@ -231,10 +269,18 @@ end
 ---@return boolean
 function Input:isJoystickButtonDown(joystickIndex, button)
     local joystick = self:getJoystick(joystickIndex)
+
     if not joystick then
         return false
     end
-    return joystick:isGamepadDown(button)
+
+    local physicalButton = getPhysicalButton(self, joystickIndex, button)
+
+    if not physicalButton then
+        return false
+    end
+
+    return joystick:isGamepadDown(physicalButton)
 end
 
 --- Vérifie si un bouton de manette vient d'être pressé
@@ -248,10 +294,16 @@ function Input:wasJoystickButtonPressed(joystickIndex, button)
         return false
     end
 
+    local physicalButton = getPhysicalButton(self, joystickIndex, button)
+
+    if not physicalButton then
+        return false
+    end
+
     local id = joystick:getID()
 
     return self.pressedJoystickButtons[id] ~= nil
-        and self.pressedJoystickButtons[id][button] == true
+        and self.pressedJoystickButtons[id][physicalButton] == true
 end
 
 --- Vérifie si un bouton de manette vient d'être relâché
@@ -265,10 +317,16 @@ function Input:wasJoystickButtonReleased(joystickIndex, button)
         return false
     end
 
+    local physicalButton = getPhysicalButton(self, joystickIndex, button)
+
+    if not physicalButton then
+        return false
+    end
+
     local id = joystick:getID()
 
     return self.releasedJoystickButtons[id] ~= nil
-        and self.releasedJoystickButtons[id][button] == true
+        and self.releasedJoystickButtons[id][physicalButton] == true
 end
 
 --- Retourne la valeur d'un axe analogique

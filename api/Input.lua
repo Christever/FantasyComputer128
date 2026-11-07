@@ -21,14 +21,8 @@ function InputAPI.btn(button)
         return true
     end
 
-    local gamepadButton = input.GAMEPAD_BUTTONS[button]
-
-    if not gamepadButton then
-        return false
-    end
-
     for i = 1, input:getJoystickCount() do
-        if input:isJoystickButtonDown(i, gamepadButton) then
+        if input:wasJoystickButtonPressed(i, button) then
             return true
         end
     end
@@ -48,14 +42,8 @@ function InputAPI.btnp(button)
         return true
     end
 
-    local gamepadButton = input.GAMEPAD_BUTTONS[button]
-
-    if not gamepadButton then
-        return false
-    end
-
     for i = 1, input:getJoystickCount() do
-        if input:wasJoystickButtonPressed(i, gamepadButton) then
+        if input:wasJoystickButtonPressed(i, button) then
             return true
         end
     end
@@ -75,14 +63,8 @@ function InputAPI.btnr(button)
         return true
     end
 
-    local gamepadButton = input.GAMEPAD_BUTTONS[button]
-
-    if not gamepadButton then
-        return false
-    end
-
     for i = 1, input:getJoystickCount() do
-        if input:wasJoystickButtonReleased(i, gamepadButton) then
+        if input:wasJoystickButtonReleased(i, button) then
             return true
         end
     end

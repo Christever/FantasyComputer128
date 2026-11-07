@@ -12,7 +12,6 @@ function Menu.update()
         Menu.selection = Menu.selection + 1
     end
 
-    -- Bouclage de la sélection
     if Menu.selection < 1 then
         Menu.selection = #Config.MENU_ITEMS
     end

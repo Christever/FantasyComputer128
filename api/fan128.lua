@@ -191,16 +191,7 @@ function f_set_anim_speed(anim, fps) end
 function f_animation(spriteSheet, frames, lastFrameOrFps, fpsOrMode, mode) end
 
 ---------------------- INPUTS ---------------------------------
----
----@alias Button
----| "LEFT"
----| "RIGHT"
----| "UP"
----| "DOWN"
----| "A"
----| "B"
----| "START"
----| "SELECT"
+
 
 --- Vérifie si une commande est maintenue.
 ---@param button Button
