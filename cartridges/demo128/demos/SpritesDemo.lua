@@ -85,25 +85,38 @@ end
 function SpritesDemo.draw()
     f_cls(0)
 
-    f_print("SPRITES DEMO", 112, 10, 7)
+    -- Titre
+    f_print("SPRITES DEMO", 112, 8, 7)
 
-    -- Creation directe
-    f_print("SPRITE CREATION", 16, 35, 4)
-    f_print("Created with internal instructions", 16, 46, 7)
+    -- Separateur
+    f_line(10, 22, 310, 22, 5)
 
-    -- Animation
+    -- Zone gauche : creation directe
+    f_print("SPRITE CREATION", 16, 34, 4)
+    f_print("Internal\ninstructions", 16, 46, 7)
+
     local player = playerFrames[currentFrame]
 
     if player then
-        f_spr(player, 152, 80)
+        f_spr(player, 56, 72)
     end
 
-    f_print("3 FRAMES ANIMATION", 16, 150, 3)
-    f_print("Created with f_sprite() and f_spr_pixel()", 16, 162, 7)
+    f_print("f_sprite()", 16, 130, 7)
+    f_print("f_spr_pixel()", 16, 142, 7)
+    f_print("f_spr()", 16, 154, 7)
 
-    -- Spritesheet
-    f_print("SPRITESHEET", 16, 180, 4)
-    f_print("Load sprites from an image file", 16, 192, 7)
+    -- Separateur vertical
+    f_line(160, 30, 160, 175, 5)
+
+    -- Zone droite : spritesheet
+    f_print("SPRITESHEET", 180, 34, 3)
+    f_print("Image loading", 180, 46, 7)
+
+    f_print("Coming soon...", 180, 90, 6)
+
+    -- Bas de l'ecran
+    f_line(10, 180, 310, 180, 5)
+    f_print("FANTASY COMPUTER 128", 88, 190, 7)
 end
 
 return SpritesDemo

@@ -60,7 +60,7 @@ function Screens.drawMenuScreen(selection)
     f_line(30, 42, Config.SCREEN_WIDTH - 30, 42, 6)
 
     -- Rubriques du menu
-    local startY = 60
+    local startY = 50
     local spacing = 16
 
     for i, item in ipairs(Config.MENU_ITEMS) do
