@@ -43,17 +43,18 @@ end
 
 local function joystickadded(self, joystick)
     registerJoystick(self, joystick)
+    print("Manette connectée")
 end
 
 local function joystickremoved(self, joystick)
     for i, current in ipairs(self.joysticks) do
-        if current:getID() == joystick:getID() then
+        if current == joystick then
             table.remove(self.joysticks, i)
             break
         end
     end
 
-    print("Manette déconnectée")
+    print("Manette deconnectee")
 end
 
 local function joystickpressed(self, joystick, button)

@@ -1,3 +1,5 @@
+local animationTimer = 0
+local currentFrame = 1
 local SpritesDemo = {}
 
 local player
@@ -42,6 +44,41 @@ function SpritesDemo.createPlayer()
 
     for x = 10, 12 do
         f_spr_pixel(player, x, 14, 4)
+    end
+end
+
+function SpritesDemo.update(dt)
+    animationTimer = animationTimer + dt
+
+    if animationTimer >= 0.25 then
+        animationTimer = 0
+        currentFrame = currentFrame == 1 and 2 or 1
+
+        -- Efface les anciennes positions des jambes.
+        for y = 14, 15 do
+            for x = 5, 12 do
+                f_spr_pixel(player, x, y, -1)
+            end
+        end
+
+        -- Dessine les jambes selon l'image actuelle.
+        if currentFrame == 1 then
+            for x = 5, 7 do
+                f_spr_pixel(player, x, 14, 4)
+            end
+
+            for x = 10, 12 do
+                f_spr_pixel(player, x, 14, 4)
+            end
+        else
+            for x = 5, 7 do
+                f_spr_pixel(player, x, 15, 4)
+            end
+
+            for x = 10, 12 do
+                f_spr_pixel(player, x, 14, 4)
+            end
+        end
     end
 end
 

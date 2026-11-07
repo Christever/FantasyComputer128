@@ -46,6 +46,7 @@ function FAN128(dt)
         elseif selectedItem == "PALETTE" then
             PaletteDemo.draw()
         elseif selectedItem == "SPRITES" then
+            SpritesDemo.update(dt)
             SpritesDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)
