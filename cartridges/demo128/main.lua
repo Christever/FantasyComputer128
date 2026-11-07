@@ -1,6 +1,7 @@
 local Screens       = require("cartridges.demo128.screens")
 local Config        = require("cartridges.demo128.config")
 local Menu          = require("cartridges.demo128.menu")
+local GraphicsDemo  = require("cartridges.demo128.demos.GraphicsDemo")
 
 local SCREEN_WIDTH  = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
@@ -43,6 +44,13 @@ function FAN128(dt)
             currentScreen = "demo"
         end
     elseif currentScreen == "demo" then
-        f_print("DEMO : " .. selectedItem, 100, 90, 7)
+        if selectedItem == "GRAPHICS" then
+            GraphicsDemo.draw()
+            if f_btnp("B") then
+                currentScreen = "menu"
+            end
+        else
+            f_print("DEMO : " .. selectedItem, 100, 90, 7)
+        end
     end
 end
