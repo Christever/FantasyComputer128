@@ -20,7 +20,7 @@ function FAN128(dt)
         local y = 85 + (i - 1) * 18
 
         if i == selection then
-            f_print(">", 95, y, 6)
+            f_print(">", 95, y, 5)
             f_print(cartridge.name, 110, y, 5)
         else
             f_print(cartridge.name, 110, y, 7)
