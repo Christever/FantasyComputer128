@@ -1,4 +1,4 @@
-local bit = require("bit")
+local bit = require("system.Bit")
 local Logger = require("system.Logger")
 ---@class CPU
 local CPU = {}

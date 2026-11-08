@@ -1,25 +1,26 @@
-local Screens       = require("cartridges.demo128.screens")
-local Config        = require("cartridges.demo128.config")
-local Menu          = require("cartridges.demo128.menu")
-local GraphicsDemo  = require("cartridges.demo128.demos.GraphicsDemo")
-local PaletteDemo   = require("cartridges.demo128.demos.PaletteDemo")
-local SpritesDemo   = require("cartridges.demo128.demos.SpritesDemo")
-local ControlsDemo  = require("cartridges.demo128.demos.ControlsDemo")
+local Screens        = require("cartridges.demo128.screens")
+local Config         = require("cartridges.demo128.config")
+local Menu           = require("cartridges.demo128.menu")
+local GraphicsDemo   = require("cartridges.demo128.demos.GraphicsDemo")
+local PaletteDemo    = require("cartridges.demo128.demos.PaletteDemo")
+local SpritesDemo    = require("cartridges.demo128.demos.SpritesDemo")
+local ControlsDemo   = require("cartridges.demo128.demos.ControlsDemo")
+local AnimationsDemo = require("cartridges.demo128.demos.AnimationsDemo")
 
-local SCREEN_WIDTH  = Config.SCREEN_WIDTH
-local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
-local CENTER_X      = SCREEN_WIDTH / 2
-local CENTER_Y      = SCREEN_HEIGHT / 2
+local SCREEN_WIDTH   = Config.SCREEN_WIDTH
+local SCREEN_HEIGHT  = Config.SCREEN_HEIGHT
+local CENTER_X       = SCREEN_WIDTH / 2
+local CENTER_Y       = SCREEN_HEIGHT / 2
 
-local elapsed       = 0
+local elapsed        = 0
 local logoAnimation
-local currentScreen = "title"
-local selectedItem  = nil
+local currentScreen  = "title"
+local selectedItem   = nil
 
 
 function BOOT()
     SpritesDemo.create()
-    
+    AnimationsDemo.create()
 end
 
 function FAN128(dt)
@@ -51,6 +52,8 @@ function FAN128(dt)
             PaletteDemo.draw()
         elseif selectedItem == "SPRITES" then
             SpritesDemo.draw()
+        elseif selectedItem == "ANIMATIONS" then
+            AnimationsDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)
         end

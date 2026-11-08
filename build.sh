@@ -3,7 +3,7 @@
 set -e
 cd "$(dirname "$0")"
 
-PROJECT_NAME="Love2D-Game-Template"
+PROJECT_NAME="Fantasy-Computer-128"
 
 LOVE_APPIMAGE="tools/love-11.5-x86_64.AppImage"
 LOVE_WINDOWS="tools/love-11.5-win64"
@@ -26,6 +26,7 @@ mkdir -p "$LINUX_DIR"
 
 # Create .love file
 echo "Creating .love..."
+
 zip -9 -r "$BUILD_DIR/$PROJECT_NAME.love" . \
     -x ".git/*" \
        "build/*" \
@@ -37,7 +38,10 @@ zip -9 -r "$BUILD_DIR/$PROJECT_NAME.love" . \
        "package-lock.json" \
        "setup.sh" \
        "build.sh" \
-       "readme.MD"
+       "readme.MD" \
+       "system.log" \
+       "logs/*"
+
 # Extract LÖVE runtime
 echo "Extracting LÖVE runtime..."
 "$LOVE_APPIMAGE" --appimage-extract >/dev/null
@@ -76,6 +80,9 @@ rm -rf "$WEB_DIR"
 
 "$LOVE_JS" -c "$BUILD_DIR/$PROJECT_NAME.love" "$WEB_DIR" \
     -t "$PROJECT_NAME"
+# Apply custom Web theme
+cp -r web/theme "$WEB_DIR/"
+cp web/index.html "$WEB_DIR/index.html"
 
 # Create distribution packages
 echo "Creating distribution archives..."
@@ -88,9 +95,19 @@ mkdir -p "$WEB_PACKAGE"
 cp "$LINUX_DIR/$PROJECT_NAME" "$LINUX_PACKAGE/"
 cp "$BUILD_DIR/lib/liblove-11.5.so" "$LINUX_PACKAGE/"
 
+# Create Linux launcher
+cat > "$LINUX_PACKAGE/launch.sh" <<'EOF'
+#!/bin/bash
+cd "$(dirname "$0")"
+export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
+./Fantasy-Computer-128
+EOF
+
+chmod +x "$LINUX_PACKAGE/launch.sh"
+
 # Windows package
-cp "$WINDOWS_DIR"/* "$WINDOWS_PACKAGE/" 
-rm "$WINDOWS_PACKAGE/lovec.exe"
+cp "$WINDOWS_DIR"/* "$WINDOWS_PACKAGE/"
+rm -f "$WINDOWS_PACKAGE/lovec.exe"
 
 # Web package
 cp -r "$WEB_DIR"/* "$WEB_PACKAGE/"
@@ -98,20 +115,20 @@ cp -r "$WEB_DIR"/* "$WEB_PACKAGE/"
 # Create ZIP archives
 cd "$BUILD_DIR"
 
+echo "Creating Linux archive..."
 zip -9 -r "${PROJECT_NAME}-linux.zip" "${PROJECT_NAME}-linux"
+
+echo "Creating Windows archive..."
 zip -9 -r "${PROJECT_NAME}-windows.zip" "${PROJECT_NAME}-windows"
 
+echo "Creating Web archive..."
 cd "${PROJECT_NAME}-web"
 zip -9 -r "../${PROJECT_NAME}-web.zip" .
-cd ..
 
-cd ..
+cd ../..
 
 echo
 echo "=== Build complete ==="
-echo "Linux:       $LINUX_DIR/$PROJECT_NAME"
 echo "Linux ZIP:   $BUILD_DIR/${PROJECT_NAME}-linux.zip"
-echo "Windows:     $WINDOWS_DIR/$PROJECT_NAME.exe"
 echo "Windows ZIP: $BUILD_DIR/${PROJECT_NAME}-windows.zip"
-echo "Web:         $WEB_DIR/index.html"
 echo "Web ZIP:     $BUILD_DIR/${PROJECT_NAME}-web.zip"

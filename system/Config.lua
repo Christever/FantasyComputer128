@@ -5,7 +5,7 @@ local Config = {}
 Config.DEVELOPER_MODE = false
 
 -- Durée de l'écran de démarrage (secondes)
-Config.STARTUP_DURATION = 3
+Config.STARTUP_DURATION = 10
 
 -- Programme chargé actuellement
 Config.PROGRAM_PATH = "programs/main.lua"

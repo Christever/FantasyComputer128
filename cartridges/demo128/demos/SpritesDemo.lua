@@ -72,6 +72,11 @@ function SpritesDemo.draw()
     f_spr(perso3, 195, 100)
     f_spr(perso4, 260, 100)
 
+    -- Explication
+    f_print("ONE IMAGE,\n MANY SPRITES", 175, 135, 3)
+    f_print("f_spritesheet()", 175, 157, 3)
+    f_print("f_get_sprite()", 175, 169, 3)
+
     -- Bas de l'ecran
     f_line(10, 180, 310, 180, 5)
     f_print("FANTASY COMPUTER 128", 88, 190, 7)

@@ -1,4 +1,4 @@
-local bit = require("bit")
+local bit = require("system.Bit")
 
 ---@class Audio
 local Audio = {}

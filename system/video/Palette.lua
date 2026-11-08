@@ -85,7 +85,8 @@ function Palette.findClosestColor(r, g, b)
     local bestIndex = 0
     local bestDistance = math.huge
 
-    for index, color in pairs(Palette.colors) do
+    for index = 0, #Palette.DEFAULT_COLORS - 1 do
+        local color = Palette.colors[index]
         local dr = r - color.r
         local dg = g - color.g
         local db = b - color.b
