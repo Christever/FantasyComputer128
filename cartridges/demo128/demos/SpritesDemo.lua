@@ -6,17 +6,22 @@ local ChestSprite = require("cartridges.demo128.demos.sprites.ChestSprite")
 local SlimeSprite = require("cartridges.demo128.demos.sprites.SlimeSprite")
 local TreeSprite = require("cartridges.demo128.demos.sprites.TreeSprite")
 
-local persoSheet
-
+local perosSheet
+local perso1, perso2, perso3, perso4
 local player, chest, slime, tree
 
 function SpritesDemo.create()
-    player = PlayerSprite.create()
-    chest = ChestSprite.create()
-    slime = SlimeSprite.create()
-    tree = TreeSprite.create()
+    player     = PlayerSprite.create()
+    chest      = ChestSprite.create()
+    slime      = SlimeSprite.create()
+    tree       = TreeSprite.create()
 
-    persoSheet = f_spritesheet("cartridges/demo128/assets/perso.png", 16, 16)
+    perosSheet = f_spritesheet("cartridges/demo128/assets/sprites/player.png", 16, 16)
+
+    perso1     = f_get_sprite(perosSheet, 1)
+    perso2     = f_get_sprite(perosSheet, 2)
+    perso3     = f_get_sprite(perosSheet, 3)
+    perso4     = f_get_sprite(perosSheet, 4)
 end
 
 function SpritesDemo.draw()
@@ -61,9 +66,11 @@ function SpritesDemo.draw()
     f_line(160, 30, 160, 175, 5)
 
     -- Zone droite : spritesheet
-    f_print("SPRITESHEET", 180, 34, 3)
-    f_print("Image loading", 180, 46, 7)
-    f_print("Coming soon...", 180, 90, 6)
+    f_print("SPRITESHEET", 180, 34, 4)
+    f_spr(perso1, 195, 60)
+    f_spr(perso2, 260, 60)
+    f_spr(perso3, 195, 100)
+    f_spr(perso4, 260, 100)
 
     -- Bas de l'ecran
     f_line(10, 180, 310, 180, 5)

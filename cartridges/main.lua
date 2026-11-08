@@ -21,9 +21,9 @@ function FAN128(dt)
     f_cls(0)
     elapsed = elapsed + dt
 
-    f_rect(195, 85, 70, 65, 6)
-    f_spr(titleAnimation, 220, 100)
-    f_print("FAN128", 205, 125, 3)
+    f_rect(15, 85, 70, 60, 15)
+    f_spr(titleAnimation, 40, 100)
+    f_print("FAN128", 25, 125, 3)
 
     -- Cadre
     f_rect(4, 4, 312, 192, 1)
