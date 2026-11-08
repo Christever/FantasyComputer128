@@ -1,8 +1,12 @@
 local SpritesDemo = {}
+
+-- SPRITES CREES
 local PlayerSprite = require("cartridges.demo128.demos.sprites.PlayerSprite")
 local ChestSprite = require("cartridges.demo128.demos.sprites.ChestSprite")
 local SlimeSprite = require("cartridges.demo128.demos.sprites.SlimeSprite")
 local TreeSprite = require("cartridges.demo128.demos.sprites.TreeSprite")
+
+local persoSheet
 
 local player, chest, slime, tree
 
@@ -11,6 +15,8 @@ function SpritesDemo.create()
     chest = ChestSprite.create()
     slime = SlimeSprite.create()
     tree = TreeSprite.create()
+
+    persoSheet = f_spritesheet("cartridges/demo128/assets/perso.png", 16, 16)
 end
 
 function SpritesDemo.draw()
