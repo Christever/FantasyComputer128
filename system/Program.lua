@@ -72,6 +72,8 @@ function Program:load(path)
 
         -- Sprites
         f_sprite            = Graphics.sprite,
+        f_sprite_data       = Graphics.sprite_data,
+        f_sprite_map        = Graphics.sprite_map,
         f_spr               = Graphics.spr,
         f_spr_pixel         = Graphics.spr_pixel,
         f_spr_transparent   = Graphics.spr_transparent,

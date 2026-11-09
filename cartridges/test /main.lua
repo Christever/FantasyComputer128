@@ -1,22 +1,21 @@
-local Config = require("cartridges.demo128.config")
-
-
-local SCREEN_WIDTH  = Config.SCREEN_WIDTH
-local SCREEN_HEIGHT = Config.SCREEN_HEIGHT
-local CENTER_X      = SCREEN_WIDTH / 2
-local CENTER_Y      = SCREEN_HEIGHT / 2
+local testSprite
 
 function BOOT()
+    local pixels = {
+        -1, -1, -1,  1,  1, -1, -1, -1,
+        -1, -1,  1,  4,  4,  1, -1, -1,
+        -1,  1,  4,  4,  4,  4,  1, -1,
+         1,  4,  4,  4,  4,  4,  4,  1,
+         1,  4,  4,  4,  4,  4,  4,  1,
+        -1,  1,  4,  4,  4,  4,  1, -1,
+        -1, -1,  1,  4,  4,  1, -1, -1,
+        -1, -1, -1,  1,  1, -1, -1, -1
+    }
 
+    testSprite = f_sprite_data(8, 8, pixels)
 end
 
 function FAN128(dt)
     f_cls(0)
-    f_print("Cartouche 1", 115, 100, 2)
-    f_print("PRESS B TO RETURN", 90, 180, 3)
-
-    if f_btnp("B") then
-        f_load_cartridge("cartridges/main.lua")
-        return
-    end
+    f_spr(testSprite, 156, 96)
 end

@@ -1,6 +1,7 @@
 local AnimationsDemo = {}
 
 local chestSprites
+local chestOpened = false
 
 local animationSheet1, heroicSheet, heartSheet
 local heartAnimation, animation1, heroicAnimation, animation2, slimeAnimation, chestAnimation
@@ -26,6 +27,7 @@ end
 
 function AnimationsDemo.draw()
     if f_btnp("UP") then
+        chestOpened = true
         f_reset_anim(chestAnimation)
         f_play_anim(chestAnimation)
     end
@@ -47,13 +49,16 @@ function AnimationsDemo.draw()
     f_print("f_animation_sprites()", 15, 110, 3)
 
     -- Animation du coffre
-    -- f_spr(chestAnimation, 55, 125)
-    f_spr(chestAnimation, 55, 125)
+    if chestOpened then
+        f_spr(chestAnimation, 55, 125)
+    else
+        f_spr(chestSprites[1], 55, 125)
+    end
 
 
     f_print("CHEST", 48, 145, 7)
     f_print("MODE ONCE", 35, 155, 3)
-    f_print("PRESS UP TO REPLAY", 15,165)
+    f_print("PRESS UP TO PLAY", 15, 165)
 
     -- Zone droite : animations
     f_print("SPRITESHEET\nANIMATIONS", 170, 34, 4)

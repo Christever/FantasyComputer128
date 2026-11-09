@@ -26,6 +26,22 @@ function Graphics.sprite(width, height, colorIndex)
     return Sprite.new(width, height, colorIndex)
 end
 
+--- Crée un sprite à partir d'une table de pixels.
+---@param width integer Largeur du sprite.
+---@param height integer Hauteur du sprite.
+---@param data integer[] Données des pixels.
+---@return Sprite
+function Graphics.sprite_data(width, height, data)
+    return Sprite.fromData(width, height, data)
+end
+
+--- Crée un sprite à partir d'une représentation textuelle.
+---@param lines string[] Lignes composant le sprite.
+---@return Sprite
+function Graphics.sprite_map(lines)
+    return Sprite.fromMap(lines)
+end
+
 -- Modifie un pixel du sprite.
 -- function Graphics.spr_pixel(sprite, x, y, color)
 --     sprite:setPixel(x, y, color)
@@ -125,7 +141,6 @@ end
 ---@param mode nil|"loop"|"once"
 ---@return Animation
 function Graphics.animation_sprites(sprites, fps, mode)
-
     local anim = Animation.newFromSprites(sprites, fps, mode)
 
     Graphics.animationManager:add(anim)

@@ -143,6 +143,18 @@ function f_polygone_fill(points, color) end
 ---@return Sprite
 function f_sprite(width, height, colorIndex) end
 
+--- Crée un sprite à partir d'une table de pixels.
+---@param width integer Largeur du sprite.
+---@param height integer Hauteur du sprite.
+---@param data integer[] Donnees des pixels, de gauche a droite puis de haut en bas.
+---@return Sprite
+function f_sprite_data(width, height, data) end
+
+--- Crée un sprite à partir d'une représentation textuelle.
+---@param lines string[] Lignes composant le sprite.
+---@return Sprite
+function f_sprite_map(lines) end
+
 --- Modifie la couleur d'un pixel du sprite.
 ---@param sprite Sprite
 ---@param x integer Coordonnée X (base 1).

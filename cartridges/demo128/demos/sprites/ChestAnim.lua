@@ -1,4 +1,3 @@
-
 local ChestAnim = {}
 
 function ChestAnim.create()
@@ -6,76 +5,75 @@ function ChestAnim.create()
     local sprites = {}
 
     -- Image 1 : coffre ferme
-    local closed = f_sprite(16, 16, -1)
+    local closed = {
+       "................",
+        "................",
+        "..666666666666..",
+        "..666666666666..",
+        "..644444444446..",
+        "..644444444446..",
+        "..644447744446..",
+        "..644447744446..",
+        "..644444444446..",
+        "..644444444446..",
+        "..644444444446..",
+        "..644444444446..",
+        "..644444444446..",
+        "................",
+        "................",
+        "................"
+    }
 
-    -- Base
-    for y = 8, 14 do
-        for x = 3, 14 do
-            f_spr_pixel(closed, x, y, 4)
-        end
-    end
+    table.insert(sprites, f_sprite_map(closed))
 
-    -- Couvercle
-    for y = 4, 7 do
-        for x = 3, 14 do
-            f_spr_pixel(closed, x, y, 6)
-        end
-    end
-
-    -- Bordure
-    for x = 3, 14 do
-        f_spr_pixel(closed, x, 7, 4)
-    end
-
-    -- Serrure
-    f_spr_pixel(closed, 9, 9, 7)
-    f_spr_pixel(closed, 9, 10, 7)
-
-    table.insert(sprites, closed)
 
     -- Image 2 : coffre en ouverture
-    local opening = f_sprite(16, 16, -1)
 
-    for y = 9, 14 do
-        for x = 3, 14 do
-            f_spr_pixel(opening, x, y, 4)
-        end
-    end
+        local opening = {
+        "................",
+        "................",
+        "................",
+        "................",
+        "...66666666666..",
+        "...66666666666..",
+        ".....7.7.7......",
+        "................",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "................",
+        "................"
+    }
 
-    for y = 3, 6 do
-        for x = 4, 13 do
-            f_spr_pixel(opening, x, y, 6)
-        end
-    end
+    table.insert(sprites, f_sprite_map(opening))
+   
 
-    for x = 5, 12 do
-        f_spr_pixel(opening, x, 7, 4)
-    end
-
-    f_spr_pixel(opening, 8, 10, 7)
-    f_spr_pixel(opening, 9, 10, 7)
-
-    table.insert(sprites, opening)
 
     -- Image 3 : coffre ouvert
-    local opened = f_sprite(16, 16, -1)
+     local opened = {
+        "................",
+        "................",
+        "...6666666666...",
+        "...6666666666...",
+        "...6666666666...",
+        "...6666666666...",
+        "....44444444....",
+        "................",
+        "..444444444444..",
+        "..444447744444..",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "..444444444444..",
+        "................",
+        "................"
+    }
 
-    for y = 9, 14 do
-        for x = 3, 14 do
-            f_spr_pixel(opened, x, y, 4)
-        end
-    end
+    table.insert(sprites, f_sprite_map(opened))
 
-    for x = 4, 13 do
-        f_spr_pixel(opened, x, 5, 6)
-        f_spr_pixel(opened, x, 6, 6)
-    end
-
-    f_spr_pixel(opened, 6, 7, 7)
-    f_spr_pixel(opened, 8, 7, 7)
-    f_spr_pixel(opened, 10, 7, 7)
-
-    table.insert(sprites, opened)
 
     return sprites
 end

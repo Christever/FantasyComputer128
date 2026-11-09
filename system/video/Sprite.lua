@@ -32,6 +32,64 @@ function Sprite.new(width, height, colorIndex)
     return self
 end
 
+--- Crée un sprite à partir d'une table de pixels.
+---@param width integer Largeur du sprite.
+---@param height integer Hauteur du sprite.
+---@param data integer[] Données des pixels (base 1).
+---@return Sprite
+function Sprite.fromData(width, height, data)
+    Logger.assert(width > 0, "Largeur invalide")
+    Logger.assert(height > 0, "Hauteur invalide")
+    Logger.assert(#data == width * height, "Nombre de pixels invalide")
+
+    local sprite = Sprite.new(width, height, -1)
+
+    for y = 1, height do
+        for x = 1, width do
+            local index = (y - 1) * width + x
+            sprite:setPixel(x, y, data[index])
+        end
+    end
+
+    return sprite
+end
+
+--- Crée un sprite à partir d'une représentation textuelle.
+---@param lines string[] Lignes composant le sprite.
+---@return Sprite
+function Sprite.fromMap(lines)
+    local height = #lines
+    local width = #lines[1]
+
+    Logger.assert(width > 0, "Largeur invalide")
+    Logger.assert(height > 0, "Hauteur invalide")
+
+    local data = {}
+
+    for y = 1, height do
+        Logger.assert(#lines[y] == width, "Largeur des lignes invalide")
+
+        for x = 1, width do
+            local char = lines[y]:sub(x, x)
+            local color
+
+            if char == "." then
+                color = -1
+            elseif char >= "0" and char <= "9" then
+                color = tonumber(char)
+            elseif char >= "A" and char <= "F" then
+                color = string.byte(char) - string.byte("A") + 10
+            else
+                Logger.assert(false, "Caractere invalide dans le sprite")
+            end
+
+            table.insert(data, color)
+        end
+    end
+
+    return Sprite.fromData(width, height, data)
+end
+
 --- Modifie la couleur d'un pixel du sprite.
 ---@param x integer Coordonnée X (base 1).
 ---@param y integer Coordonnée Y (base 1).
