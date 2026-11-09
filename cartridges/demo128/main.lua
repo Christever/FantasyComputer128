@@ -6,6 +6,7 @@ local PaletteDemo    = require("cartridges.demo128.demos.PaletteDemo")
 local SpritesDemo    = require("cartridges.demo128.demos.SpritesDemo")
 local ControlsDemo   = require("cartridges.demo128.demos.ControlsDemo")
 local AnimationsDemo = require("cartridges.demo128.demos.AnimationsDemo")
+local InputDemo      = require("cartridges.demo128.demos.InputDemo")
 
 local SCREEN_WIDTH   = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT  = Config.SCREEN_HEIGHT
@@ -54,6 +55,8 @@ function FAN128(dt)
             SpritesDemo.draw()
         elseif selectedItem == "ANIMATIONS" then
             AnimationsDemo.draw()
+            elseif selectedItem == "INPUT" then
+            InputDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)
         end
