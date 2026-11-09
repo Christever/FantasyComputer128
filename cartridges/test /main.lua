@@ -16,6 +16,10 @@ function BOOT()
 end
 
 function FAN128(dt)
+    if f_btnp("B") then
+        f_load_cartridge("cartridges/main.lua")
+        return
+    end
     f_cls(0)
     f_spr(testSprite, 156, 96)
 end
