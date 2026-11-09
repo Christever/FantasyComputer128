@@ -7,6 +7,7 @@ local SpritesDemo    = require("cartridges.demo128.demos.SpritesDemo")
 local ControlsDemo   = require("cartridges.demo128.demos.ControlsDemo")
 local AnimationsDemo = require("cartridges.demo128.demos.AnimationsDemo")
 local InputDemo      = require("cartridges.demo128.demos.InputDemo")
+local MemoryDemo     = require("cartridges.demo128.demos.MemoryDemo")
 
 local SCREEN_WIDTH   = Config.SCREEN_WIDTH
 local SCREEN_HEIGHT  = Config.SCREEN_HEIGHT
@@ -40,7 +41,7 @@ function FAN128(dt)
 
         Screens.drawMenuScreen(Menu.selection)
 
-        if f_btnp("SELECT")or f_btnp("START") then
+        if f_btnp("SELECT") or f_btnp("START") then
             selectedItem = Menu.getSelectedItem()
             currentScreen = "demo"
         end
@@ -55,8 +56,11 @@ function FAN128(dt)
             SpritesDemo.draw()
         elseif selectedItem == "ANIMATIONS" then
             AnimationsDemo.draw()
-            elseif selectedItem == "INPUT" then
+        elseif selectedItem == "INPUT" then
             InputDemo.draw()
+        elseif selectedItem == "MEMORY" then
+            MemoryDemo.update()
+            MemoryDemo.draw()
         else
             f_print("DEMO : " .. selectedItem, 100, 90, 7)
         end
