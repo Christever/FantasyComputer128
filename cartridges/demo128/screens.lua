@@ -75,8 +75,8 @@ function Screens.drawMenuScreen(selection)
     end
 
     -- Indication en bas de l'ecran
-    f_print("UP / DOWN : SELECT", 75, 175, 1)
-    f_print("START : CONFIRM", 90, 185, 1)
+    f_print("UP / DOWN : SELECT  CARTRIDGE", 75, 175, 1)
+    f_print("SELECT : CONFIRM", 90, 185, 1)
 end
 
 return Screens

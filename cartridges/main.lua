@@ -70,11 +70,11 @@ function FAN128(dt)
     end
 
     if math.floor(elapsed * 2) % 2 == 0 then
-        f_print("PRESS START", 90, 165, 3)
+        f_print("PRESS SELECT", 90, 165, 3)
     end
 
     -- Validation
-    if f_btnp("START") then
+    if f_btnp("SELECT") then
         f_load_cartridge(cartridges[selection].path)
     end
 end

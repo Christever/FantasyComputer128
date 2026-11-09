@@ -32,7 +32,7 @@ function FAN128(dt)
     if currentScreen == "title" then
         Screens.drawTitleScreen(logoAnimation, elapsed)
 
-        if f_btnp("START") then
+        if f_btnp("SELECT") or f_btnp("START") then
             currentScreen = "menu"
         end
     elseif currentScreen == "menu" then
@@ -40,7 +40,7 @@ function FAN128(dt)
 
         Screens.drawMenuScreen(Menu.selection)
 
-        if f_btnp("START") then
+        if f_btnp("SELECT")or f_btnp("START") then
             selectedItem = Menu.getSelectedItem()
             currentScreen = "demo"
         end

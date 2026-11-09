@@ -95,8 +95,8 @@ function Input.new()
         DOWN   = "down",
         A      = "x",
         B      = "c",
-        START  = "return",
-        SELECT = "space",
+        START  = "space",
+        SELECT = "return",
         EXIT   = "escape"
     }
 
