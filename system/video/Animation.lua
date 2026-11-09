@@ -49,6 +49,36 @@ function Animation.new(spriteSheet, frames, lastFrameOrFps, fpsOrMode, mode)
     return self
 end
 
+--- Crée une animation à partir d'une liste de sprites.
+---@param sprites Sprite[]
+---@param fps number
+---@param mode nil|"loop"|"once"
+---@return Animation
+function Animation.newFromSprites(sprites, fps, mode)
+
+    Logger.assert(type(sprites) == "table" and #sprites > 0,
+        "L animation doit contenir au moins un sprite")
+
+    fps = math.floor(fps)
+    Logger.assert(fps > 0,
+        "La frequence d animation doit etre superieure a zero")
+
+    local self = setmetatable({}, { __index = Animation })
+
+    self.frames       = sprites
+    self.spriteSheet  = nil
+    self.firstFrame   = 1
+    self.lastFrame    = #sprites
+    self.fps          = fps
+    self.mode         = mode or "loop"
+
+    self.currentFrame = 1
+    self.elapsed      = 0
+    self.playing      = true
+
+    return self
+end
+
 --- Démarre ou reprend l'animation.
 ---@return nil
 function Animation:play()
@@ -106,11 +136,15 @@ end
 
 --- Récupère le sprite actuellement affiché.
 ---@return Sprite|nil
---- Récupère le sprite actuellement affiché.
----@return Sprite|nil
 function Animation:getSprite()
-    local frameIndex = self.frames[self.currentFrame]
-    return self.spriteSheet:getSprite(frameIndex)
+
+    local frame = self.frames[self.currentFrame]
+
+    if self.spriteSheet then
+        return self.spriteSheet:getSprite(frame)
+    end
+
+    return frame
 end
 
 return Animation

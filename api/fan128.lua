@@ -186,6 +186,13 @@ function f_get_sprite(sheet, index) end
 ---@return Animation
 function f_animation(spriteSheet, firstFrame, lastFrame, fps) end
 
+--- Crée une animation à partir d'une liste de sprites internes.
+---@param sprites Sprite[] Liste des sprites constituant les images de l'animation.
+---@param fps number Images par seconde.
+---@param mode? "loop"|"once" Mode de lecture.
+---@return Animation
+function f_animation_sprites(sprites, fps, mode) end
+
 --- Met une animation en pause.
 ---@param anim Animation
 function f_stop_anim(anim) end

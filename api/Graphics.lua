@@ -119,6 +119,20 @@ function Graphics.animation(spriteSheet, frames, lastFrameOrFps, fpsOrMode, mode
     return anim
 end
 
+--- Crée une animation à partir de sprites internes.
+---@param sprites Sprite[]
+---@param fps integer
+---@param mode nil|"loop"|"once"
+---@return Animation
+function Graphics.animation_sprites(sprites, fps, mode)
+
+    local anim = Animation.newFromSprites(sprites, fps, mode)
+
+    Graphics.animationManager:add(anim)
+
+    return anim
+end
+
 --- Met une animation en pause.
 ---@param anim Animation
 function Graphics.stop_anim(anim)

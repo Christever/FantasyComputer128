@@ -80,6 +80,7 @@ function Program:load(path)
 
         -- Animation
         f_animation         = Graphics.animation,
+        f_animation_sprites = Graphics.animation_sprites,
         f_stop_anim         = Graphics.stop_anim,
         f_play_anim         = Graphics.play_anim,
         f_reset_anim        = Graphics.reset_anim,
