@@ -90,38 +90,38 @@ function f_circle(cx, cy, radius, color) end
 function f_circle_fill(cx, cy, radius, color) end
 
 --- Dessine une ellipse sans remplissage.
----@param x number Position horizontale.
----@param y number Position verticale.
----@param width number Largeur.
----@param height number Hauteur.
+---@param x integer Position horizontale.
+---@param y integer Position verticale.
+---@param width integer Largeur.
+---@param height integer Hauteur.
 ---@param color? integer Index de couleur (0 à 255).
 function f_ellipse(x, y, width, height, color) end
 
 --- Dessine une ellipse pleine.
----@param x number Position horizontale.
----@param y number Position verticale.
----@param width number Largeur.
----@param height number Hauteur.
+---@param x integer Position horizontale.
+---@param y integer Position verticale.
+---@param width integer Largeur.
+---@param height integer Hauteur.
 ---@param color? integer Index de couleur (0 à 255).
 function f_ellipse_fill(x, y, width, height, color) end
 
 --- Dessine le contour d'un triangle.
----@param x1 number Coordonnée X du premier sommet.
----@param y1 number Coordonnée Y du premier sommet.
----@param x2 number Coordonnée X du deuxième sommet.
----@param y2 number Coordonnée Y du deuxième sommet.
----@param x3 number Coordonnée X du troisième sommet.
----@param y3 number Coordonnée Y du troisième sommet.
+---@param x1 integer Coordonnée X du premier sommet.
+---@param y1 integer Coordonnée Y du premier sommet.
+---@param x2 integer Coordonnée X du deuxième sommet.
+---@param y2 integer Coordonnée Y du deuxième sommet.
+---@param x3 integer Coordonnée X du troisième sommet.
+---@param y3 integer Coordonnée Y du troisième sommet.
 ---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
 function f_triangle(x1, y1, x2, y2, x3, y3, colorIndex) end
 
 --- Dessine un triangle plein
----@param x1 number Coordonnée X du premier sommet.
----@param y1 number Coordonnée Y du premier sommet.
----@param x2 number Coordonnée X du deuxième sommet.
----@param y2 number Coordonnée Y du deuxième sommet.
----@param x3 number Coordonnée X du troisième sommet.
----@param y3 number Coordonnée Y du troisième sommet.
+---@param x1 integer Coordonnée X du premier sommet.
+---@param y1 integer Coordonnée Y du premier sommet.
+---@param x2 integer Coordonnée X du deuxième sommet.
+---@param y2 integer Coordonnée Y du deuxième sommet.
+---@param x3 integer Coordonnée X du troisième sommet.
+---@param y3 integer Coordonnée Y du troisième sommet.
 ---@param colorIndex? integer Index de couleur (0-255). Utilise la couleur actuelle si absent.
 function f_triangle_fill(x1, y1, x2, y2, x3, y3, colorIndex) end
 

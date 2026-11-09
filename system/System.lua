@@ -251,6 +251,7 @@ function System:draw()
     end
 
     self.video:draw()
+    love.graphics.print("FPS: " .. love.timer.getFPS(), 10, 10)
 end
 
 return System

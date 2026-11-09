@@ -20,13 +20,15 @@ Video.DEFAULT_COLOR = 1
 ---@param memory Memory
 ---@return Video
 function Video.new(memory)
-    local self        = setmetatable({}, { __index = Video })
+    local self         = setmetatable({}, { __index = Video })
 
-    self.memory       = memory
-    self.canvas       = nil
-    self.imageData    = nil
-    self.image        = nil
-    self.currentColor = Video.DEFAULT_COLOR
+    self.memory        = memory
+    self.canvas        = nil
+    self.imageData     = nil
+    self.image         = nil
+    self.previousVRAM  = {}
+    self.screenChanged = false
+    self.currentColor  = Video.DEFAULT_COLOR
 
     return self
 end
@@ -46,6 +48,11 @@ function Video:init()
 
     self.image = love.graphics.newImage(self.imageData)
 
+    -- Forcer l'affichage initial de toute la VRAM
+    for address = 0, Video.PIXEL_COUNT - 1 do
+        self.memory.dirtyVRAM[address] = true
+    end
+
     print("========== VIDEO ==========")
     print("Résolution :", Video.WIDTH, "x", Video.HEIGHT)
     print("Pixels :", Video.PIXEL_COUNT)
@@ -58,10 +65,14 @@ function Video:reset()
 end
 
 --- Conversion de la VRAM en pixels
+--- Conversion de la VRAM en pixels
 function Video:updateScreen()
-    for pixelIndex = 0, Video.PIXEL_COUNT - 1 do
-        local colorIndex = self.memory:readVRAM(pixelIndex)
+    local dirtyVRAM = self.memory.dirtyVRAM
 
+    self.screenChanged = false
+
+    for pixelIndex in pairs(dirtyVRAM) do
+        local colorIndex = self.memory:readVRAM(pixelIndex)
         local color = Palette.getColor(colorIndex)
 
         local x = pixelIndex % Video.WIDTH
@@ -75,9 +86,15 @@ function Video:updateScreen()
             color.b / 255,
             1
         )
+
+        self.screenChanged = true
+
+        dirtyVRAM[pixelIndex] = nil
     end
 
-    self.image:replacePixels(self.imageData)
+    if self.screenChanged then
+        self.image:replacePixels(self.imageData)
+    end
 end
 
 --- Définit la couleur graphique courante
@@ -188,10 +205,9 @@ end
 ---@param colorIndex integer?   numéro de la couleur
 function Video:clear(colorIndex)
     colorIndex = colorIndex or 0
-    for y = 0, Video.HEIGHT - 1 do
-        for x = 0, Video.WIDTH - 1 do
-            self:setPixel(x, y, colorIndex)
-        end
+
+    for address = 0, Video.PIXEL_COUNT - 1 do
+        self.memory:writeVRAM(address, colorIndex)
     end
 end
 
@@ -254,8 +270,24 @@ end
 ---@param colorIndex integer? numéro de la couleur
 function Video:fillRect(x, y, width, height, colorIndex)
     colorIndex = colorIndex or self.currentColor
-    for py = y, y + height - 1 do
-        self:drawLine(x, py, x + width - 1, py, colorIndex)
+
+    local startX = math.max(0, math.floor(x))
+    local startY = math.max(0, math.floor(y))
+
+    local endX = math.min(Video.WIDTH - 1, math.floor(x + width - 1))
+    local endY = math.min(Video.HEIGHT - 1, math.floor(y + height - 1))
+
+    if startX > endX or startY > endY then
+        return
+    end
+
+    for py = startY, endY do
+        local address = py * Video.WIDTH + startX
+
+        for px = startX, endX do
+            self.memory:writeVRAM(address, colorIndex)
+            address = address + 1
+        end
     end
 end
 
@@ -266,22 +298,43 @@ end
 ---@param colorIndex? integer numéro de la couleur
 function Video:drawCircle(cx, cy, radius, colorIndex)
     colorIndex = colorIndex or self.currentColor
+
     if radius < 0 then return end
 
     local x = radius
     local y = 0
     local err = 1 - radius
 
-    while x >= y do
-        self:setPixel(cx + x, cy + y, colorIndex)
-        self:setPixel(cx + y, cy + x, colorIndex)
-        self:setPixel(cx - y, cy + x, colorIndex)
-        self:setPixel(cx - x, cy + y, colorIndex)
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
 
-        self:setPixel(cx - x, cy - y, colorIndex)
-        self:setPixel(cx - y, cy - x, colorIndex)
-        self:setPixel(cx + y, cy - x, colorIndex)
-        self:setPixel(cx + x, cy - y, colorIndex)
+    local function pixel(px, py)
+        if px < 0 or px >= width or py < 0 or py >= height then
+            return
+        end
+
+        local address = py * width + px
+        local index = address + 1
+
+        if vram[index] ~= colorIndex then
+            vram[index] = colorIndex
+            dirtyVRAM[address] = true
+        end
+    end
+
+    while x >= y do
+        pixel(cx + x, cy + y)
+        pixel(cx + y, cy + x)
+        pixel(cx - y, cy + x)
+        pixel(cx - x, cy + y)
+
+        pixel(cx - x, cy - y)
+        pixel(cx - y, cy - x)
+        pixel(cx + y, cy - x)
+        pixel(cx + x, cy - y)
 
         y = y + 1
 
@@ -301,18 +354,37 @@ end
 ---@param colorIndex? integer numéro de la couleur
 function Video:fillCircle(cx, cy, radius, colorIndex)
     colorIndex = colorIndex or self.currentColor
+
     if radius < 0 then return end
 
-    for y = -radius, radius do
-        local x = math.floor(math.sqrt(radius * radius - y * y))
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
 
-        self:drawLine(
-            cx - x,
-            cy + y,
-            cx + x,
-            cy + y,
-            colorIndex
-        )
+    for y = -radius, radius do
+        local py = cy + y
+
+        if py >= 0 and py < height then
+            local x = math.floor(math.sqrt(radius * radius - y * y))
+
+            local startX = math.max(0, cx - x)
+            local endX = math.min(width - 1, cx + x)
+
+            local address = py * width + startX
+
+            for px = startX, endX do
+                local index = address + 1
+
+                if vram[index] ~= colorIndex then
+                    vram[index] = colorIndex
+                    dirtyVRAM[address] = true
+                end
+
+                address = address + 1
+            end
+        end
     end
 end
 
@@ -324,6 +396,31 @@ end
 ---@param colorIndex? integer numéro de la couleur
 function Video:drawEllipse(cx, cy, radiusX, radiusY, colorIndex)
     colorIndex = colorIndex or self.currentColor
+
+    if radiusX < 0 or radiusY < 0 then
+        return
+    end
+
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
+
+    local function pixel(px, py)
+        if px < 0 or px >= width or py < 0 or py >= height then
+            return
+        end
+
+        local address = py * width + px
+        local index = address + 1
+
+        if vram[index] ~= colorIndex then
+            vram[index] = colorIndex
+            dirtyVRAM[address] = true
+        end
+    end
 
     local x = 0
     local y = radiusY
@@ -337,10 +434,10 @@ function Video:drawEllipse(cx, cy, radiusX, radiusY, colorIndex)
     local p1 = ry2 - (rx2 * radiusY) + (0.25 * rx2)
 
     while dx < dy do
-        self:setPixel(cx + x, cy + y, colorIndex)
-        self:setPixel(cx - x, cy + y, colorIndex)
-        self:setPixel(cx + x, cy - y, colorIndex)
-        self:setPixel(cx - x, cy - y, colorIndex)
+        pixel(cx + x, cy + y)
+        pixel(cx - x, cy + y)
+        pixel(cx + x, cy - y)
+        pixel(cx - x, cy - y)
 
         if p1 < 0 then
             x = x + 1
@@ -362,10 +459,10 @@ function Video:drawEllipse(cx, cy, radiusX, radiusY, colorIndex)
         - rx2 * ry2
 
     while y >= 0 do
-        self:setPixel(cx + x, cy + y, colorIndex)
-        self:setPixel(cx - x, cy + y, colorIndex)
-        self:setPixel(cx + x, cy - y, colorIndex)
-        self:setPixel(cx - x, cy - y, colorIndex)
+        pixel(cx + x, cy + y)
+        pixel(cx - x, cy + y)
+        pixel(cx + x, cy - y)
+        pixel(cx - x, cy - y)
 
         if p2 > 0 then
             y = y - 1
@@ -382,7 +479,6 @@ function Video:drawEllipse(cx, cy, radiusX, radiusY, colorIndex)
         end
     end
 end
-
 ---Dessine une ellipse vide
 ---@param cx integer centre X
 ---@param cy integer centre Y
@@ -396,17 +492,38 @@ function Video:fillEllipse(cx, cy, radiusX, radiusY, colorIndex)
         return
     end
 
-    for y = -radiusY, radiusY do
-        local ratio = 1 - (y * y) / (radiusY * radiusY)
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
+
+    local rx2 = radiusX * radiusX
+    local ry2 = radiusY * radiusY
+
+    local startY = math.max(-radiusY, -cy)
+    local endY = math.min(radiusY, height - 1 - cy)
+
+    for y = startY, endY do
+        local ratio = 1 - (y * y) / ry2
         local x = math.floor(radiusX * math.sqrt(ratio))
 
-        self:drawLine(
-            cx - x,
-            cy + y,
-            cx + x,
-            cy + y,
-            colorIndex
-        )
+        local startX = math.max(0, cx - x)
+        local endX = math.min(width - 1, cx + x)
+
+        local address = (cy + y) * width + startX
+
+        for px = startX, endX do
+            local index = address + 1
+
+            if vram[index] ~= colorIndex then
+                vram[index] = colorIndex
+                dirtyVRAM[address] = true
+            end
+
+            address = address + 1
+        end
     end
 end
 
@@ -421,9 +538,59 @@ end
 function Video:drawTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
     colorIndex = colorIndex or self.currentColor
 
-    self:drawLine(x1, y1, x2, y2, colorIndex)
-    self:drawLine(x2, y2, x3, y3, colorIndex)
-    self:drawLine(x3, y3, x1, y1, colorIndex)
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
+
+    local function pixel(x, y)
+        if x < 0 or x >= width or y < 0 or y >= height then
+            return
+        end
+
+        local address = y * width + x
+        local index = address + 1
+
+        if vram[index] ~= colorIndex then
+            vram[index] = colorIndex
+            dirtyVRAM[address] = true
+        end
+    end
+
+    local function line(x1, y1, x2, y2)
+        local dx = math.abs(x2 - x1)
+        local dy = math.abs(y2 - y1)
+
+        local sx = x1 < x2 and 1 or -1
+        local sy = y1 < y2 and 1 or -1
+
+        local err = dx - dy
+
+        while true do
+            pixel(x1, y1)
+
+            if x1 == x2 and y1 == y2 then
+                break
+            end
+
+            local e2 = 2 * err
+
+            if e2 > -dy then
+                err = err - dy
+                x1 = x1 + sx
+            end
+
+            if e2 < dx then
+                err = err + dx
+                y1 = y1 + sy
+            end
+        end
+    end
+
+    line(x1, y1, x2, y2)
+    line(x2, y2, x3, y3)
+    line(x3, y3, x1, y1)
 end
 
 --- Dessine un triangle plein.
@@ -437,8 +604,13 @@ end
 function Video:fillTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
     colorIndex = colorIndex or self.currentColor
 
-    local minY = math.min(y1, y2, y3)
-    local maxY = math.max(y1, y2, y3)
+    local minY = math.max(0, math.min(y1, y2, y3))
+    local maxY = math.min(Video.HEIGHT - 1, math.max(y1, y2, y3))
+
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
 
     local function scanlineIntersection(y, xa, ya, xb, yb)
         if ya == yb then
@@ -453,33 +625,43 @@ function Video:fillTriangle(x1, y1, x2, y2, x3, y3, colorIndex)
     end
 
     for y = minY, maxY do
-        local intersections = {}
+        local left = math.huge
+        local right = -math.huge
 
         local x = scanlineIntersection(y, x1, y1, x2, y2)
         if x then
-            table.insert(intersections, x)
+            left = math.min(left, x)
+            right = math.max(right, x)
         end
 
         x = scanlineIntersection(y, x2, y2, x3, y3)
         if x then
-            table.insert(intersections, x)
+            left = math.min(left, x)
+            right = math.max(right, x)
         end
 
         x = scanlineIntersection(y, x3, y3, x1, y1)
         if x then
-            table.insert(intersections, x)
+            left = math.min(left, x)
+            right = math.max(right, x)
         end
 
-        if #intersections >= 2 then
-            table.sort(intersections)
+        if left ~= math.huge then
+            local startX = math.max(0, math.floor(left))
+            local endX = math.min(width - 1, math.ceil(right))
 
-            self:drawLine(
-                math.floor(intersections[1]),
-                y,
-                math.ceil(intersections[#intersections]),
-                y,
-                colorIndex
-            )
+            local address = y * width + startX
+
+            for px = startX, endX do
+                local index = address + 1
+
+                if vram[index] ~= colorIndex then
+                    vram[index] = colorIndex
+                    dirtyVRAM[address] = true
+                end
+
+                address = address + 1
+            end
         end
     end
 end
@@ -492,16 +674,65 @@ function Video:drawPolygon(points, colorIndex)
 
     Logger.assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
 
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
+    local height = Video.HEIGHT
+
+    local function pixel(x, y)
+        if x < 0 or x >= width or y < 0 or y >= height then
+            return
+        end
+
+        local address = y * width + x
+        local index = address + 1
+
+        if vram[index] ~= colorIndex then
+            vram[index] = colorIndex
+            dirtyVRAM[address] = true
+        end
+    end
+
+    local function line(x1, y1, x2, y2)
+        local dx = math.abs(x2 - x1)
+        local dy = math.abs(y2 - y1)
+
+        local sx = x1 < x2 and 1 or -1
+        local sy = y1 < y2 and 1 or -1
+
+        local err = dx - dy
+
+        while true do
+            pixel(x1, y1)
+
+            if x1 == x2 and y1 == y2 then
+                break
+            end
+
+            local e2 = 2 * err
+
+            if e2 > -dy then
+                err = err - dy
+                x1 = x1 + sx
+            end
+
+            if e2 < dx then
+                err = err + dx
+                y1 = y1 + sy
+            end
+        end
+    end
+
     for i = 1, #points do
         local current = points[i]
         local nextPoint = points[(i % #points) + 1]
 
-        self:drawLine(
+        line(
             math.floor(current.x),
             math.floor(current.y),
             math.floor(nextPoint.x),
-            math.floor(nextPoint.y),
-            colorIndex
+            math.floor(nextPoint.y)
         )
     end
 end
@@ -514,49 +745,78 @@ function Video:fillPolygon(points, colorIndex)
 
     Logger.assert(#points >= 3, "Un polygone doit avoir au moins 3 sommets")
 
-    local minY = points[1].y
-    local maxY = points[1].y
+    local minY = math.huge
+    local maxY = -math.huge
 
-    for i = 2, #points do
-        minY = math.min(minY, points[i].y)
-        maxY = math.max(maxY, points[i].y)
+    for i = 1, #points do
+        local y = math.floor(points[i].y)
+        minY = math.min(minY, y)
+        maxY = math.max(maxY, y)
     end
 
+    minY = math.max(0, minY)
+    maxY = math.min(Video.HEIGHT - 1, maxY)
+
+    local memory = self.memory
+    local vram = memory.vram
+    local dirtyVRAM = memory.dirtyVRAM
+    local width = Video.WIDTH
+
+    local intersections = {}
+
     for y = minY, maxY do
-        local intersections = {}
+        local count = 0
 
         for i = 1, #points do
             local current = points[i]
             local nextPoint = points[(i % #points) + 1]
 
+            local x1 = current.x
             local y1 = current.y
+            local x2 = nextPoint.x
             local y2 = nextPoint.y
 
-            -- Ignore les côtés horizontaux et évite
-            -- de compter deux fois les sommets.
             if (y1 <= y and y < y2) or (y2 <= y and y < y1) then
-                local x = current.x
-                    + (y - y1) * (nextPoint.x - current.x) / (y2 - y1)
+                local x = x1 + (y - y1) * (x2 - x1) / (y2 - y1)
 
-                table.insert(intersections, x)
+                count = count + 1
+                intersections[count] = x
             end
         end
 
-        table.sort(intersections)
+        -- Trie les intersections par ordre croissant
+        for i = 2, count do
+            local value = intersections[i]
+            local j = i - 1
 
-        -- Remplit les zones comprises entre les intersections.
-        for i = 1, #intersections - 1, 2 do
-            self:drawLine(
-                math.ceil(intersections[i]),
-                y,
-                math.floor(intersections[i + 1]),
-                y,
-                colorIndex
-            )
+            while j >= 1 and intersections[j] > value do
+                intersections[j + 1] = intersections[j]
+                j = j - 1
+            end
+
+            intersections[j + 1] = value
+        end
+
+        -- Remplit chaque zone comprise entre deux intersections
+        for i = 1, count - 1, 2 do
+            local startX = math.max(0, math.ceil(intersections[i]))
+            local endX = math.min(width - 1, math.floor(intersections[i + 1]))
+
+            local address = y * width + startX
+
+            for x = startX, endX do
+                local index = address + 1
+
+                if vram[index] ~= colorIndex then
+                    vram[index] = colorIndex
+                    dirtyVRAM[address] = true
+                end
+
+                address = address + 1
+            end
         end
     end
 
-    -- Redessine le contour pour obtenir des bords nets.
     self:drawPolygon(points, colorIndex)
 end
 
@@ -567,22 +827,40 @@ end
 ---@param flipX? boolean Retournement horizontal.
 ---@param flipY? boolean Retournement vertical.
 function Video:drawSprite(sprite, x, y, flipX, flipY)
-    flipX = flipX or false
-    flipY = flipY or false
+    function Video:drawSprite(sprite, x, y, flipX, flipY)
+        flipX = flipX or false
+        flipY = flipY or false
 
-    for sy = 1, sprite.height do
-        for sx = 1, sprite.width do
-            local sourceX = flipX and (sprite.width - sx + 1) or sx
+        -- Limites visibles du sprite
+        local startX = math.max(1, 1 - x)
+        local startY = math.max(1, 1 - y)
+
+        local endX = math.min(sprite.width, Video.WIDTH - x)
+        local endY = math.min(sprite.height, Video.HEIGHT - y)
+
+        if startX > endX or startY > endY then
+            return
+        end
+
+        local pixels = sprite.pixels
+        local transparentColor = sprite.transparentColor
+
+        for sy = startY, endY do
             local sourceY = flipY and (sprite.height - sy + 1) or sy
+            local row = pixels[sourceY]
 
-            local colorIndex = sprite:getPixel(sourceX, sourceY)
+            for sx = startX, endX do
+                local sourceX = flipX and (sprite.width - sx + 1) or sx
 
-            if colorIndex ~= sprite:getTransparentColor() then
-                self:setPixel(
-                    x + sx - 1,
-                    y + sy - 1,
-                    colorIndex
-                )
+                local colorIndex = row[sourceX]
+
+                if colorIndex ~= transparentColor then
+                    self:setPixel(
+                        x + sx - 1,
+                        y + sy - 1,
+                        colorIndex
+                    )
+                end
             end
         end
     end

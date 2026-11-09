@@ -1,4 +1,5 @@
 local Logger = require("system.Logger")
+local Config = require("system.Config")
 ---@class Memory
 local Memory = {}
 
@@ -79,18 +80,24 @@ function Memory.getPhysicalAddress(address, bank)
     return bank * Memory.BANK_SIZE + offset
 end
 
+-- Signale une modification de la VRAM
+local function markVRAMDirty(self, address)
+    self.dirtyVRAM[address] = true
+end
+
 function Memory.new()
-    local self = setmetatable({}, { __index = Memory })
+    local self     = setmetatable({}, { __index = Memory })
 
     -- Mémoires physiques
-    self.rom = createMemory(Memory.ROM_SIZE, 0)
-    self.ram = createMemory(Memory.RAM_SIZE, 0)
-    self.vram = createMemory(Memory.VRAM_SIZE, 0)
+    self.rom       = createMemory(Memory.ROM_SIZE, 0)
+    self.ram       = createMemory(Memory.RAM_SIZE, 0)
+    self.vram      = createMemory(Memory.VRAM_SIZE, 0)
+    self.dirtyVRAM = {}
 
     -- Sélecteurs de banques
-    self.romBank = 0
-    self.ramBank = 0
-    self.vramBank = 0
+    self.romBank   = 0
+    self.ramBank   = 0
+    self.vramBank  = 0
 
     self:reset()
 
@@ -110,14 +117,19 @@ end
 -- Écriture directe dans la RAM
 ---@param address integer
 ---@param value integer
-function Memory:writeRAM(address, value)
-    Logger.assert(address >= 0 and address < Memory.RAM_SIZE,
-        "Adresse RAM invalide")
+function Memory:writeVRAM(address, value)
+    Logger.assert(address >= 0 and address < Memory.VRAM_SIZE,
+        "Adresse VRAM invalide")
 
     Logger.assert(value >= 0 and value <= 255,
         "Valeur invalide")
 
-    self.ram[address + 1] = value
+    local index = address + 1
+
+    if self.vram[index] ~= value then
+        self.vram[index] = value
+        markVRAMDirty(self, address)
+    end
 end
 
 -- Lecture directe de la ROM
@@ -149,13 +161,19 @@ end
 ---@param address integer
 ---@param value integer
 function Memory:writeVRAM(address, value)
-    Logger.assert(address >= 0 and address < Memory.VRAM_SIZE,
-        "Adresse VRAM invalide")
+    if Config.DEBUG_MODE then
+        Logger.assert(address >= 0 and address < Memory.VRAM_SIZE,
+            "Adresse VRAM invalide")
 
-    Logger.assert(value >= 0 and value <= 255,
-        "Valeur invalide")
+        Logger.assert(value >= 0 and value <= 255,
+            "Valeur invalide")
+    end
+    local index = address + 1
 
-    self.vram[address + 1] = value
+    if self.vram[index] ~= value then
+        self.vram[index] = value
+        markVRAMDirty(self, address)
+    end
 end
 
 -- Lecture via l'espace d'adressage du CPU
@@ -206,7 +224,7 @@ function Memory:write(address, value)
         local physicalAddress =
             self.vramBank * Memory.BANK_SIZE + offset
 
-        self.vram[physicalAddress + 1] = value
+        self:writeVRAM(physicalAddress, value)
     elseif region == "BANK" then
         local physicalAddress =
             (self.ramBank + 1) * Memory.BANK_SIZE + offset

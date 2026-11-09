@@ -54,11 +54,15 @@ cp squashfs-root/bin/love "$LINUX_DIR/$PROJECT_NAME"
 mkdir -p "$BUILD_DIR/lib"
 cp squashfs-root/lib/liblove-11.5.so "$BUILD_DIR/lib/"
 
+
 # Append game to LÖVE binary
 cat "$BUILD_DIR/$PROJECT_NAME.love" >> "$LINUX_DIR/$PROJECT_NAME"
 
 # Make executable
 chmod +x "$LINUX_DIR/$PROJECT_NAME"
+
+# Set library search path relative to executable
+patchelf --set-rpath '$ORIGIN' "$LINUX_DIR/$PROJECT_NAME"
 
 # Remove temporary runtime
 rm -rf squashfs-root
@@ -92,18 +96,10 @@ mkdir -p "$WINDOWS_PACKAGE"
 mkdir -p "$WEB_PACKAGE"
 
 # Linux package
+echo "Preparing Linux package..."
+
 cp "$LINUX_DIR/$PROJECT_NAME" "$LINUX_PACKAGE/"
 cp "$BUILD_DIR/lib/liblove-11.5.so" "$LINUX_PACKAGE/"
-
-# Create Linux launcher
-cat > "$LINUX_PACKAGE/launch.sh" <<'EOF'
-#!/bin/bash
-cd "$(dirname "$0")"
-export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
-./Fantasy-Computer-128
-EOF
-
-chmod +x "$LINUX_PACKAGE/launch.sh"
 
 # Windows package
 cp "$WINDOWS_DIR"/* "$WINDOWS_PACKAGE/"

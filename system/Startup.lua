@@ -13,6 +13,7 @@ function Startup.new()
     self.timer = 0
     self.finished = false
     self.animationTimer = 0
+    self.screenInitialized = false
 
     return self
 end
@@ -31,7 +32,23 @@ function Startup:update(dt)
 end
 
 function Startup:draw(video)
-    video:clear(6)
+    if not self.screenInitialized then
+        video:clear(6)
+
+        video:setColor(3)
+        video:drawText(115, 65, "FANTASY 128")
+
+        video:setColor(4)
+        video:drawText(75, 95, "FANTASY COMPUTER SYSTEM")
+
+        video:setColor(3)
+        video:drawLine(65, 115, 255, 115)
+
+        video:setColor(15)
+        video:drawText(90, 135, "8-BIT VIRTUAL CONSOLE")
+
+        self.screenInitialized = true
+    end
 
     -- Titre principal
     video:setColor(3)
@@ -50,11 +67,12 @@ function Startup:draw(video)
     video:drawText(90, 135, "8-BIT VIRTUAL CONSOLE")
 
     -- Message de démarrage
+    video:setColor(6)
+    video:fillRect(112, 160, 96, 16)
+
     video:setColor(7)
     local dots = math.floor(self.animationTimer * 2) % 4
-
     local loadingText = "LOADING" .. string.rep(".", dots)
-
     video:drawText(120, 165, loadingText)
 end
 
