@@ -1,11 +1,13 @@
-local Graphics  = require("api.Graphics")
-local MemoryAPI = require("api.Memory")
-local Logger    = require("system.Logger")
-local InputAPI  = require("api.Input")
+local Graphics     = require("api.Graphics")
+local MemoryAPI    = require("api.Memory")
+local InputAPI     = require("api.Input")
+local CollisionAPI = require("api.Collision")
+
+local Logger       = require("system.Logger")
 
 ---@class Program
-local Program   = {}
-Program.__index = Program
+local Program      = {}
+Program.__index    = Program
 
 ---@param video Video
 ---@param animationManager AnimationManager
@@ -79,6 +81,10 @@ function Program:load(path)
         f_spr_transparent   = Graphics.spr_transparent,
         f_spritesheet       = Graphics.spritesheet,
         f_get_sprite        = Graphics.get_sprite,
+
+        -- Collision
+        -- Collisions
+        f_overlap           = CollisionAPI.overlap,
 
         -- Animation
         f_animation         = Graphics.animation,

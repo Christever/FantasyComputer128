@@ -287,6 +287,20 @@ function f_peek(address) end
 ---@param value integer Valeur (0 à 255)
 function f_poke(address, value) end
 
+---------------------- COLLISIONS ------------------------------
+
+--- Vérifie si deux rectangles se chevauchent.
+---@param x1 number Position X du premier rectangle.
+---@param y1 number Position Y du premier rectangle.
+---@param width1 number Largeur du premier rectangle.
+---@param height1 number Hauteur du premier rectangle.
+---@param x2 number Position X du deuxième rectangle.
+---@param y2 number Position Y du deuxième rectangle.
+---@param width2 number Largeur du deuxième rectangle.
+---@param height2 number Hauteur du deuxième rectangle.
+---@return boolean True si les rectangles se chevauchent.
+function f_overlap(x1, y1, width1, height1, x2, y2, width2, height2) end
+
 ------------------------CARTOUCHE ----------------------
 
 ---  Chargement d'une cartouche
